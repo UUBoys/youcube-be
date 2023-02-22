@@ -1,0 +1,94 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model comments {
+  uuid        String   @id @db.Char(36)
+  parent_uuid String?  @db.Char(36)
+  user_uuid   String   @db.Char(36)
+  video_uuid  String   @db.Char(36)
+  message     String   @db.VarChar(255)
+  created     DateTime @default(now()) @db.DateTime(0)
+
+  @@index([parent_uuid], map: "parent_uuid")
+  @@index([user_uuid], map: "user_uuid")
+  @@index([video_uuid], map: "video_uuid")
+}
+
+model history {
+  id         Int      @id @default(autoincrement())
+  video_uuid String   @db.Char(36)
+  user_uuid  String   @db.Char(36)
+  created    DateTime @default(now()) @db.DateTime(0)
+
+  @@index([user_uuid], map: "user_uuid")
+  @@index([video_uuid], map: "video_uuid")
+}
+
+model liked_videos {
+  id         Int      @id @default(autoincrement())
+  user_uuid  String   @db.Char(36)
+  video_uuid String   @db.Char(36)
+  created    DateTime @default(now()) @db.DateTime(0)
+
+  @@index([user_uuid], map: "user_uuid")
+  @@index([video_uuid], map: "video_uuid")
+}
+
+model playlist {
+  uuid      String @id @db.Char(36)
+  user_uuid String @db.Char(36)
+
+  @@index([user_uuid], map: "user_uuid")
+}
+
+model playlist_videos {
+  id            Int    @id @default(autoincrement())
+  playlist_uuid String @db.Char(36)
+  video_uuid    String @db.Char(36)
+
+  @@index([playlist_uuid], map: "playlist_uuid")
+  @@index([video_uuid], map: "video_uuid")
+}
+
+model subscribers {
+  id             Int    @id @default(autoincrement())
+  user_uuid      String @db.Char(36)
+  subcriber_uuid String @db.Char(36)
+
+  @@index([subcriber_uuid], map: "subcriber_uuid")
+  @@index([user_uuid], map: "user_uuid")
+}
+
+model tags {
+  id   Int    @id @db.SmallInt
+  name String @db.VarChar(30)
+}
+
+model users {
+  uuid     String  @id @db.Char(36)
+  verifed  Boolean @default(false)
+  name     String  @db.Char(30)
+  email    String  @db.Char(50)
+  password String  @db.VarChar(110)
+}
+
+model videos {
+  uuid       String   @id @db.Char(36)
+  user_uuid  String   @db.Char(36)
+  monetized  Boolean  @default(false)
+  title      String   @db.Char(200)
+  descripion String   @db.VarChar(255)
+  tag        Int      @db.SmallInt
+  created    DateTime @default(now()) @db.DateTime(0)
+
+  @@index([tag], map: "tag")
+  @@index([user_uuid], map: "user_uuid")
+}

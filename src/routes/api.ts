@@ -4,7 +4,6 @@ import jetValidator from 'jet-validator';
 import adminMw from './middleware/adminMw';
 import Paths from './constants/Paths';
 import User from '@src/models/User';
-import AuthRoutes from './AuthRoutes';
 import UserRoutes from './UserRoutes';
 
 
@@ -14,29 +13,7 @@ const apiRouter = Router(),
   validate = jetValidator();
 
 
-// **** Setup **** //
-
-const authRouter = Router();
-
-// Login user
-authRouter.post(
-  Paths.Auth.Login,
-  validate('email', 'password'),
-  AuthRoutes.login,
-);
-
-// Logout user
-authRouter.get(
-  Paths.Auth.Logout,
-  AuthRoutes.logout,
-);
-
-// Add AuthRouter
-apiRouter.use(Paths.Auth.Base, authRouter);
-
-
 // ** Add UserRouter ** //
-
 const userRouter = Router();
 
 // Get all users
