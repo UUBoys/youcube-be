@@ -31,7 +31,7 @@ const login = async (req: IReq<ILoginReq>, res: IRes) => {
     });
   }
 
-  const user = await UserService.getUser(email);
+  const user = await UserService.getUserByEmail(email);
 
   return res.json({
     user,

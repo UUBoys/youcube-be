@@ -22,6 +22,21 @@ const getUser = async (uuid: string) => {
   return user;
 };
 
+const getUserByEmail = async (email: string) => {
+  const user = await prisma.users.findFirst({
+    where: {
+      email: email,
+    },
+    select: {
+      uuid: true,
+      name: true,
+      email: true,
+    },
+  });
+
+  return user;
+};
+
 const createUser = async (email: string, password: string, name: string) => {
   // Salt and hash the password
   const hashedPassword = await PwdUtil.getHash(password);
@@ -49,4 +64,5 @@ const createUser = async (email: string, password: string, name: string) => {
 export default {
   createUser,
   getUser,
+  getUserByEmail,
 } as const;
