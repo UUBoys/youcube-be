@@ -3,27 +3,13 @@
 const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' + 
   'with the appropriate user keys.';
 
-export enum UserRoles {
-  Standard,
-  Admin,
-}
-
-
 // **** Types **** //
 
 export interface IUser {
-  id: number;
+  uuid: string;
   name: string;
   email: string;
-  pwdHash?: string;
-  role?: UserRoles;
-}
-
-export interface ISessionUser {
-  id: number;
-  email: string;
-  name: string;
-  role: IUser['role'];
+  password: string;
 }
 
 
@@ -31,42 +17,27 @@ export interface ISessionUser {
 
 class User implements IUser {
 
-  public id: number;
+  public uuid: string;
   public name: string;
   public email: string;
-  public role?: UserRoles;
-  public pwdHash?: string;
+  public password: string;
 
   /**
    * Constructor()
    */
   public constructor(
-    name?: string,
-    email?: string,
-    role?: UserRoles,
-    pwdHash?: string,
-    id?: number, // id last cause usually set by db
+    uuid: string,
+    name: string,
+    email: string,
+    password: string, // id last cause usually set by db
   ) {
-    this.name = (name ?? '');
-    this.email = (email ?? '');
-    this.role = (role ?? UserRoles.Standard);
-    this.pwdHash = (pwdHash ?? '');
-    this.id = (id ?? -1);
+    this.name = name;
+    this.email = email;
+    this.uuid = uuid;
+    this.password = password;
   }
 
-  /**
-   * Get user instance from object.
-   */
-  public static from(param: object): User {
-    // Check is user
-    if (!User.isUser(param)) {
-      throw new Error(INVALID_CONSTRUCTOR_PARAM);
-    }
-    // Get user instance
-    const p = param as IUser;
-    return new User(p.name, p.email, p.role, p.pwdHash, p.id);
-  }
-
+  
   /**
    * Is this an object which contains all the user keys.
    */

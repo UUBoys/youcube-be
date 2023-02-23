@@ -10,12 +10,16 @@ datasource db {
 }
 
 model comments {
-  uuid        String   @id @db.Char(36)
-  parent_uuid String?  @db.Char(36)
-  user_uuid   String   @db.Char(36)
-  video_uuid  String   @db.Char(36)
-  message     String   @db.VarChar(255)
-  created     DateTime @default(now()) @db.DateTime(0)
+  uuid           String     @id @db.Char(36)
+  parent_uuid    String?    @db.Char(36)
+  user_uuid      String     @db.Char(36)
+  video_uuid     String     @db.Char(36)
+  message        String     @db.VarChar(255)
+  created        DateTime   @default(now()) @db.DateTime(0)
+  comments       comments?  @relation("commentsTocomments", fields: [parent_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "comments_ibfk_1")
+  other_comments comments[] @relation("commentsTocomments")
+  users          users      @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "comments_ibfk_2")
+  videos         videos     @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "comments_ibfk_3")
 
   @@index([parent_uuid], map: "parent_uuid")
   @@index([user_uuid], map: "user_uuid")
@@ -27,6 +31,8 @@ model history {
   video_uuid String   @db.Char(36)
   user_uuid  String   @db.Char(36)
   created    DateTime @default(now()) @db.DateTime(0)
+  users      users    @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "history_ibfk_1")
+  videos     videos   @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "history_ibfk_2")
 
   @@index([user_uuid], map: "user_uuid")
   @@index([video_uuid], map: "video_uuid")
@@ -37,57 +43,79 @@ model liked_videos {
   user_uuid  String   @db.Char(36)
   video_uuid String   @db.Char(36)
   created    DateTime @default(now()) @db.DateTime(0)
+  users      users    @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "liked_videos_ibfk_2")
+  videos     videos   @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "liked_videos_ibfk_3")
 
   @@index([user_uuid], map: "user_uuid")
   @@index([video_uuid], map: "video_uuid")
 }
 
 model playlist {
-  uuid      String @id @db.Char(36)
-  user_uuid String @db.Char(36)
+  uuid            String            @id @db.Char(36)
+  user_uuid       String            @db.Char(36)
+  users           users             @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "playlist_ibfk_1")
+  playlist_videos playlist_videos[]
 
   @@index([user_uuid], map: "user_uuid")
 }
 
 model playlist_videos {
-  id            Int    @id @default(autoincrement())
-  playlist_uuid String @db.Char(36)
-  video_uuid    String @db.Char(36)
+  id            Int      @id @default(autoincrement())
+  playlist_uuid String   @db.Char(36)
+  video_uuid    String   @db.Char(36)
+  playlist      playlist @relation(fields: [playlist_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "playlist_videos_ibfk_1")
+  videos        videos   @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "playlist_videos_ibfk_2")
 
   @@index([playlist_uuid], map: "playlist_uuid")
   @@index([video_uuid], map: "video_uuid")
 }
 
 model subscribers {
-  id             Int    @id @default(autoincrement())
-  user_uuid      String @db.Char(36)
-  subcriber_uuid String @db.Char(36)
+  id                                      Int    @id @default(autoincrement())
+  user_uuid                               String @db.Char(36)
+  subcriber_uuid                          String @db.Char(36)
+  users_subscribers_user_uuidTousers      users  @relation("subscribers_user_uuidTousers", fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "subscribers_ibfk_1")
+  users_subscribers_subcriber_uuidTousers users  @relation("subscribers_subcriber_uuidTousers", fields: [subcriber_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "subscribers_ibfk_2")
 
   @@index([subcriber_uuid], map: "subcriber_uuid")
   @@index([user_uuid], map: "user_uuid")
 }
 
 model tags {
-  id   Int    @id @db.SmallInt
-  name String @db.VarChar(30)
+  id     Int      @id @db.SmallInt
+  name   String   @db.VarChar(30)
+  videos videos[]
 }
 
 model users {
-  uuid     String  @id @db.Char(36)
-  verifed  Boolean @default(false)
-  name     String  @db.Char(30)
-  email    String  @db.Char(50)
-  password String  @db.VarChar(110)
+  uuid                                          String         @id @db.Char(36)
+  verifed                                       Boolean        @default(false)
+  name                                          String         @db.Char(30)
+  email                                         String         @db.Char(50)
+  password                                      String         @db.VarChar(110)
+  comments                                      comments[]
+  history                                       history[]
+  liked_videos                                  liked_videos[]
+  playlist                                      playlist[]
+  subscribers_subscribers_user_uuidTousers      subscribers[]  @relation("subscribers_user_uuidTousers")
+  subscribers_subscribers_subcriber_uuidTousers subscribers[]  @relation("subscribers_subcriber_uuidTousers")
+  videos                                        videos[]
 }
 
 model videos {
-  uuid       String   @id @db.Char(36)
-  user_uuid  String   @db.Char(36)
-  monetized  Boolean  @default(false)
-  title      String   @db.Char(200)
-  descripion String   @db.VarChar(255)
-  tag        Int      @db.SmallInt
-  created    DateTime @default(now()) @db.DateTime(0)
+  uuid            String            @id @db.Char(36)
+  user_uuid       String            @db.Char(36)
+  monetized       Boolean           @default(false)
+  title           String            @db.Char(200)
+  descripion      String            @db.VarChar(255)
+  tag             Int               @db.SmallInt
+  created         DateTime          @default(now()) @db.DateTime(0)
+  comments        comments[]
+  history         history[]
+  liked_videos    liked_videos[]
+  playlist_videos playlist_videos[]
+  users           users             @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_1")
+  tags            tags              @relation(fields: [tag], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_2")
 
   @@index([tag], map: "tag")
   @@index([user_uuid], map: "user_uuid")
