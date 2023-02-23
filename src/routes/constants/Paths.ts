@@ -14,6 +14,11 @@ const Paths = {
     Update: '/update',
     Delete: '/delete/:id',
   },
+  Auth: {
+    Base: '/auth',
+    Login: '/login',
+    Register: '/register',
+  },
 };
 
 

@@ -1,14 +1,16 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import SessionUtil from '@src/util/SessionUtil';
 import AuthService from '@src/services/AuthService';
+import UserService from '@src/services/UserService';
 
 import { IReq, IRes } from './types/express/misc';
 
 
 // **** Types **** //
 
-interface ILoginReq {
+interface IRegisterReq {
   email: string;
+  name: string,
   password: string;
 }
 
@@ -17,34 +19,23 @@ interface ILoginReq {
 
 /**
  * Login a user.
- */
-async function login(req: IReq<ILoginReq>, res: IRes) {
-  const { email, password } = req.body;
-  // Login
-  const user = await AuthService.login(email, password);
-  // Setup Admin Cookie
-  await SessionUtil.addSessionData(res, {
-    id: user.id,
-    email: user.name,
-    name: user.name,
-    role: user.role,
-  });
-  // Return
-  return res.status(HttpStatusCodes.OK).end();
-}
+*/
 
-/**
- * Logout the user.
- */
-function logout(_: IReq, res: IRes) {
-  SessionUtil.clearCookie(res);
-  return res.status(HttpStatusCodes.OK).end();
-}
+
+const register = async(req: IReq<IRegisterReq>, res: IRes)  => {
+  const { email, password, name } = req.body;
+
+  const newUser = await UserService.createUser(email, password, name);
+  const jwtToken = await AuthService.loginUser(email, password);
+  return res.json({
+    user: newUser,
+    jwt: jwtToken,
+  });
+};
 
 
 // **** Export default **** //
 
 export default {
-  login,
-  logout,
+  register,
 } as const;

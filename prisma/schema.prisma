@@ -88,11 +88,12 @@ model tags {
 }
 
 model users {
-  uuid                                          String         @id @db.Char(36)
+  uuid                                          String         @id @default(uuid()) @db.Char(36)
   verifed                                       Boolean        @default(false)
   name                                          String         @db.Char(30)
   email                                         String         @db.Char(50)
   password                                      String         @db.VarChar(110)
+  jwt                                           String         @db.VarChar(110)
   comments                                      comments[]
   history                                       history[]
   liked_videos                                  liked_videos[]
