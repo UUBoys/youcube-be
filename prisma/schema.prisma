@@ -38,7 +38,7 @@ model history {
   @@index([video_uuid], map: "video_uuid")
 }
 
-model liked_videos {
+model likedVideos {
   id         Int      @id @default(autoincrement())
   user_uuid  String   @db.Char(36)
   video_uuid String   @db.Char(36)
@@ -51,15 +51,15 @@ model liked_videos {
 }
 
 model playlist {
-  uuid            String            @id @db.Char(36)
-  user_uuid       String            @db.Char(36)
-  users           users             @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "playlist_ibfk_1")
-  playlist_videos playlist_videos[]
+  uuid            String           @id @db.Char(36)
+  user_uuid       String           @db.Char(36)
+  users           users            @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "playlist_ibfk_1")
+  playlist_videos playlistVideos[]
 
   @@index([user_uuid], map: "user_uuid")
 }
 
-model playlist_videos {
+model playlistVideos {
   id            Int      @id @default(autoincrement())
   playlist_uuid String   @db.Char(36)
   video_uuid    String   @db.Char(36)
@@ -88,35 +88,35 @@ model tags {
 }
 
 model users {
-  uuid                                          String         @id @default(uuid()) @db.Char(36)
-  verifed                                       Boolean        @default(false)
-  name                                          String         @db.Char(30)
-  email                                         String         @db.Char(50)
-  password                                      String         @db.VarChar(110)
-  jwt                                           String         @db.VarChar(110)
+  uuid                                          String        @id @default(uuid()) @db.Char(36)
+  verifed                                       Boolean       @default(false)
+  name                                          String        @db.Char(30)
+  email                                         String        @db.Char(50)
+  password                                      String        @db.VarChar(110)
+  jwt                                           String        @db.VarChar(110)
   comments                                      comments[]
   history                                       history[]
-  liked_videos                                  liked_videos[]
+  liked_videos                                  likedVideos[]
   playlist                                      playlist[]
-  subscribers_subscribers_user_uuidTousers      subscribers[]  @relation("subscribers_user_uuidTousers")
-  subscribers_subscribers_subcriber_uuidTousers subscribers[]  @relation("subscribers_subcriber_uuidTousers")
+  subscribers_subscribers_user_uuidTousers      subscribers[] @relation("subscribers_user_uuidTousers")
+  subscribers_subscribers_subcriber_uuidTousers subscribers[] @relation("subscribers_subcriber_uuidTousers")
   videos                                        videos[]
 }
 
 model videos {
-  uuid            String            @id @db.Char(36)
-  user_uuid       String            @db.Char(36)
-  monetized       Boolean           @default(false)
-  title           String            @db.Char(200)
-  descripion      String            @db.VarChar(255)
-  tag             Int               @db.SmallInt
-  created         DateTime          @default(now()) @db.DateTime(0)
+  uuid            String           @id @db.Char(36)
+  user_uuid       String           @db.Char(36)
+  monetized       Boolean          @default(false)
+  title           String           @db.Char(200)
+  descripion      String           @db.VarChar(255)
+  tag             Int              @db.SmallInt
+  created         DateTime         @default(now()) @db.DateTime(0)
   comments        comments[]
   history         history[]
-  liked_videos    liked_videos[]
-  playlist_videos playlist_videos[]
-  users           users             @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_1")
-  tags            tags              @relation(fields: [tag], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_2")
+  liked_videos    likedVideos[]
+  playlist_videos playlistVideos[]
+  users           users            @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_1")
+  tags            tags             @relation(fields: [tag], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_2")
 
   @@index([tag], map: "tag")
   @@index([user_uuid], map: "user_uuid")
