@@ -42,8 +42,19 @@ const login = async (req: IReq<ILoginReq>, res: IRes) => {
 const register = async (req: IReq<IRegisterReq>, res: IRes) => {
   const { email, password, name } = req.body;
 
+  const userExists = await UserService.getUserByEmail(email);
+
+  if (userExists) {
+    res.status(409);
+    return res.json({
+      message: "User already exists",
+    });
+  }
+
   const newUser = await UserService.createUser(email, password, name);
   const jwtToken = await AuthService.loginUser(email, password);
+
+  res.status(200);
 
   return res.json({
     user: newUser,
