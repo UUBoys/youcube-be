@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import jetValidator from 'jet-validator';
 
-import adminMw from './middleware/adminMw';
 import Paths from './constants/Paths';
 import AuthRoutes from './AuthRoutes';
 import UserRoutes from './UserRoutes';
