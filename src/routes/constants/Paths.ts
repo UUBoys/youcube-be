@@ -17,6 +17,13 @@ const Paths = {
     Login: "/login",
     Register: "/register",
   },
+  Videos: {
+    Base: "/videos",
+    Get: "/:uuid",
+    Create: "/create",
+    Update: "/:uuid/",
+    Comments: "/:uuid/comments",
+  },
 };
 
 // **** Export **** //

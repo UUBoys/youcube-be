@@ -21,7 +21,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { NodeEnvs } from '@src/constants/misc';
 import { RouteError } from '@src/other/classes';
 
-import swaggerDoc from '../swagger.json'
+import swaggerDoc from '@src/swagger.json'
 
 
 // **** Variables **** //
