@@ -27,10 +27,18 @@ apiRouter.use(
 const authRouter = Router();
 
 // Register
-authRouter.post(Paths.Auth.Register, AuthRoutes.register);
+authRouter.post(
+  Paths.Auth.Register,
+  validate("email", "name", "password"),
+  AuthRoutes.register
+);
 
 // Login
-authRouter.post(Paths.Auth.Login, AuthRoutes.login);
+authRouter.post(
+  Paths.Auth.Login,
+  validate("email", "password"),
+  AuthRoutes.login
+);
 
 apiRouter.use(Paths.Auth.Base, authRouter);
 
