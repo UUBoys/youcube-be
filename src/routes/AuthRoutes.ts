@@ -1,16 +1,15 @@
-import HttpStatusCodes from '@src/constants/HttpStatusCodes';
-import SessionUtil from '@src/util/SessionUtil';
-import AuthService from '@src/services/AuthService';
-import UserService from '@src/services/UserService';
+import HttpStatusCodes from "@src/constants/HttpStatusCodes";
+import SessionUtil from "@src/util/SessionUtil";
+import AuthService from "@src/services/AuthService";
+import UserService from "@src/services/UserService";
 
-import { IReq, IRes } from './types/express/misc';
-
+import { IReq, IRes } from "./types/express/misc";
 
 // **** Types **** //
 
 interface IRegisterReq {
   email: string;
-  name: string,
+  name: string;
   password: string;
 }
 
@@ -19,18 +18,16 @@ interface ILoginReq {
   password: string;
 }
 
-
 // **** Functions **** //
 
-
-const login = async(req: IReq<ILoginReq>, res: IRes) => {
+const login = async (req: IReq<ILoginReq>, res: IRes) => {
   const { email, password } = req.body;
 
   const jwtToken = await AuthService.loginUser(email, password);
 
   if (!jwtToken) {
     return res.status(HttpStatusCodes.UNAUTHORIZED).json({
-      message: 'Wrong email or password',
+      message: "Wrong email or password",
     });
   }
 
@@ -42,7 +39,7 @@ const login = async(req: IReq<ILoginReq>, res: IRes) => {
   });
 };
 
-const register = async(req: IReq<IRegisterReq>, res: IRes)  => {
+const register = async (req: IReq<IRegisterReq>, res: IRes) => {
   const { email, password, name } = req.body;
 
   const newUser = await UserService.createUser(email, password, name);
@@ -53,7 +50,6 @@ const register = async(req: IReq<IRegisterReq>, res: IRes)  => {
     jwt: jwtToken,
   });
 };
-
 
 // **** Export default **** //
 

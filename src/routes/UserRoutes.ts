@@ -1,19 +1,9 @@
-import HttpStatusCodes from '@src/constants/HttpStatusCodes';
+import HttpStatusCodes from "@src/constants/HttpStatusCodes";
 
-import UserService from '@src/services/UserService';
-import { IReq, IRes } from './types/express/misc';
-
+import UserService from "@src/services/UserService";
+import { IReq, IRes } from "./types/express/misc";
 
 // **** Types **** //
-
-interface IRegisterReq {
-  email: string;
-  name: string,
-  password: string;
-}
-
-
-
 
 // **** Functions **** //
 
@@ -21,8 +11,8 @@ interface IRegisterReq {
  * Get user.
  */
 
-const getUser = async(req: IReq, res: IRes) => {
-  const {uuid} = req.params;
+const getUser = async (req: IReq, res: IRes) => {
+  const { uuid } = req.params;
 
   const user = await UserService.getUser(uuid);
 
@@ -30,8 +20,6 @@ const getUser = async(req: IReq, res: IRes) => {
     user,
   });
 };
-
-
 
 // **** Export default **** //
 

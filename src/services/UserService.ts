@@ -1,19 +1,18 @@
-import { prisma } from '../db/client';
-import PwdUtil from '@src/util/PwdUtil';
-import { uuid } from 'uuidv4';
+import { prisma } from "../db/client";
+import PwdUtil from "@src/util/PwdUtil";
+import { uuid } from "uuidv4";
 
 // **** Variables **** //
-export const USER_NOT_FOUND_ERR = 'User not found';
-
+export const USER_NOT_FOUND_ERR = "User not found";
 
 // **** Functions **** //
 
 const getUser = async (uuid: string) => {
   const user = await prisma.users.findUnique({
-  where: {
-    uuid : uuid,
-  },
-  select: {
+    where: {
+      uuid: uuid,
+    },
+    select: {
       uuid: true,
       name: true,
       email: true,
@@ -24,7 +23,6 @@ const getUser = async (uuid: string) => {
 };
 
 const createUser = async (email: string, password: string, name: string) => {
-  
   // Salt and hash the password
   const hashedPassword = await PwdUtil.getHash(password);
 
