@@ -31,6 +31,12 @@ authRouter.post(
   AuthRoutes.register,
 );
 
+// Login
+authRouter.post(
+  Paths.Auth.Login,
+  AuthRoutes.login,
+);
+
 apiRouter.use(Paths.Auth.Base, adminMw, authRouter);
 
 // **** Export default **** //

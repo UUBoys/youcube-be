@@ -14,19 +14,38 @@ interface IRegisterReq {
   password: string;
 }
 
+interface ILoginReq {
+  email: string;
+  password: string;
+}
+
 
 // **** Functions **** //
 
-/**
- * Login a user.
-*/
 
+const login = async(req: IReq<ILoginReq>, res: IRes) => {
+  const { email, password } = req.body;
+
+  const user = await UserService.getUser(email);
+  if (!user) {
+    return res.status(HttpStatusCodes.UNAUTHORIZED).json({
+      message: 'User not found',
+    });
+  }
+
+  const jwtToken = await AuthService.loginUser(email, password);
+  return res.json({
+    user,
+    jwt: jwtToken,
+  });
+};
 
 const register = async(req: IReq<IRegisterReq>, res: IRes)  => {
   const { email, password, name } = req.body;
 
   const newUser = await UserService.createUser(email, password, name);
   const jwtToken = await AuthService.loginUser(email, password);
+  
   return res.json({
     user: newUser,
     jwt: jwtToken,
@@ -38,4 +57,5 @@ const register = async(req: IReq<IRegisterReq>, res: IRes)  => {
 
 export default {
   register,
+  login,
 } as const;

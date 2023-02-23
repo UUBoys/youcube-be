@@ -8,6 +8,21 @@ export const USER_NOT_FOUND_ERR = 'User not found';
 
 // **** Functions **** //
 
+const getUser = async (email: string) => {
+  const user = await prisma.users.findFirst({
+    where: {
+      email: email,
+    },
+    select: {
+      uuid: true,
+      name: true,
+      email: true,
+    },
+  });
+
+  return user;
+};
+
 const createUser = async (email: string, password: string, name: string) => {
   
   // Salt and hash the password
@@ -35,4 +50,5 @@ const createUser = async (email: string, password: string, name: string) => {
 
 export default {
   createUser,
+  getUser,
 } as const;
