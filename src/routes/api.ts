@@ -40,7 +40,7 @@ authRouter.post(
   AuthRoutes.login,
 );
 
-apiRouter.use(Paths.Auth.Base, adminMw, authRouter);
+apiRouter.use(Paths.Auth.Base, authRouter);
 
 // **** Export default **** //
 export default apiRouter;
