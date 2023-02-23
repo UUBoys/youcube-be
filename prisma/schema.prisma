@@ -93,7 +93,6 @@ model users {
   name                                          String        @db.Char(30)
   email                                         String        @db.Char(50)
   password                                      String        @db.VarChar(110)
-  jwt                                           String        @db.VarChar(110)
   comments                                      comments[]
   history                                       history[]
   liked_videos                                  likedVideos[]
