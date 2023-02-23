@@ -26,14 +26,16 @@ interface ILoginReq {
 const login = async(req: IReq<ILoginReq>, res: IRes) => {
   const { email, password } = req.body;
 
-  const user = await UserService.getUser(email);
-  if (!user) {
+  const jwtToken = await AuthService.loginUser(email, password);
+
+  if (!jwtToken) {
     return res.status(HttpStatusCodes.UNAUTHORIZED).json({
-      message: 'User not found',
+      message: 'Wrong email or password',
     });
   }
 
-  const jwtToken = await AuthService.loginUser(email, password);
+  const user = await UserService.getUser(email);
+
   return res.json({
     user,
     jwt: jwtToken,
@@ -45,7 +47,7 @@ const register = async(req: IReq<IRegisterReq>, res: IRes)  => {
 
   const newUser = await UserService.createUser(email, password, name);
   const jwtToken = await AuthService.loginUser(email, password);
-  
+
   return res.json({
     user: newUser,
     jwt: jwtToken,

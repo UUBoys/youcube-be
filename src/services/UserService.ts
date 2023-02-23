@@ -8,12 +8,12 @@ export const USER_NOT_FOUND_ERR = 'User not found';
 
 // **** Functions **** //
 
-const getUser = async (email: string) => {
-  const user = await prisma.users.findFirst({
-    where: {
-      email: email,
-    },
-    select: {
+const getUser = async (uuid: string) => {
+  const user = await prisma.users.findUnique({
+  where: {
+    uuid : uuid,
+  },
+  select: {
       uuid: true,
       name: true,
       email: true,

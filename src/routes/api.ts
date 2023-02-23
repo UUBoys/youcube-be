@@ -4,6 +4,8 @@ import jetValidator from 'jet-validator';
 import adminMw from './middleware/adminMw';
 import Paths from './constants/Paths';
 import AuthRoutes from './AuthRoutes';
+import UserRoutes from './UserRoutes';
+import { expressjwt } from "express-jwt";
 
 // **** Variables **** //
 
@@ -17,10 +19,11 @@ const userRouter = Router();
 // Get all users
 userRouter.get(
   Paths.Users.Get,
+  UserRoutes.getUser,
 );
 
 // Add UserRouter
-apiRouter.use(Paths.Users.Base, adminMw, userRouter);
+apiRouter.use(Paths.Users.Base, expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }), userRouter);
 
 
 const authRouter = Router();
