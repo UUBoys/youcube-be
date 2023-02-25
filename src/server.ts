@@ -21,8 +21,6 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { NodeEnvs } from '@src/constants/misc';
 import { RouteError } from '@src/other/classes';
 
-import swaggerDoc from '@src/swagger.json'
-
 
 // **** Variables **** //
 
@@ -50,7 +48,12 @@ if (EnvVars.NodeEnv === NodeEnvs.Production) {
 app.use(Paths.Base, BaseRouter);
 
 // Add swagger
-app.use(Paths.Swagger, swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+const swaggerOptions = {
+  swaggerOptions: {
+    url: "https://raw.githubusercontent.com/UUBoys/youcube-swagger/main/swagger.json",
+  }
+};
+app.use(Paths.Swagger, swaggerUi.serveFiles(undefined, swaggerOptions), swaggerUi.setup(undefined, swaggerOptions));
 
 // Add error handler
 app.use((
