@@ -5,6 +5,7 @@ import { RouteError } from "@src/other/classes";
 import jsonwebtoken from "jsonwebtoken";
 
 import EnvVars from "../constants/EnvVars";
+import { JWTToken } from "@src/other/types";
 
 // **** Variables **** //
 
@@ -28,6 +29,24 @@ function getSessionData<T>(req: Request): Promise<string | T | undefined> {
   const { Key } = EnvVars.CookieProps,
     jwt = req.signedCookies[Key];
   return _decode(jwt);
+}
+
+/**
+ * Get JWT payload from request object - i.e. neodpustitelné kletby
+ */
+async function getJwtPayload(req: Request): Promise<JWTToken> {
+  const jwt = req.headers.authorization?.split(" ")[1];
+
+  if(!jwt) throw new RouteError(HttpStatusCodes.UNAUTHORIZED, Errors.Validation);
+  
+  const JWT = await _decode<JWTToken>(jwt) as JWTToken;
+  if (!JWT || JWT instanceof String) throw new RouteError(HttpStatusCodes.UNAUTHORIZED, Errors.Validation);
+
+  return JWT as JWTToken;
+}
+
+function setJWTUser(payload: JWTToken) {
+  return _sign(payload);
 }
 
 /**
@@ -82,7 +101,9 @@ function _decode<T>(jwt: string): Promise<string | undefined | T> {
 // **** Export default **** //
 
 export default {
+  getJwtPayload,
   addSessionData,
   getSessionData,
   clearCookie,
+  setJWTUser,
 } as const;

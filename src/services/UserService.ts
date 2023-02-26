@@ -1,6 +1,6 @@
 import { prisma } from "../db/client";
 import PwdUtil from "@src/util/PwdUtil";
-import { uuid } from "uuidv4";
+import { v4 } from "uuid";
 
 // **** Variables **** //
 export const USER_NOT_FOUND_ERR = "User not found";
@@ -44,7 +44,7 @@ const createUser = async (email: string, password: string, name: string) => {
   // Create the user
   const newUser = await prisma.users.create({
     data: {
-      uuid: uuid(),
+      uuid: v4(),
       name: name,
       email: email,
       password: hashedPassword,

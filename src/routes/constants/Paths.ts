@@ -21,7 +21,7 @@ const Paths = {
     Base: "/videos",
     Get: "/:uuid",
     Create: "/create",
-    Update: "/:uuid/",
+    Update: "/:uuid",
     Comments: "/:uuid/comments",
   },
 };
