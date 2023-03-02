@@ -8,21 +8,21 @@ import { v4 } from "uuid";
 const getVideos = async () => {
     const videos = await prisma.videos.findMany({
         select: {
-        uuid: true,
-        title: true,
-        descripion: true,
-        monetized: true,
-        created: true,
-        tag: true,
-        users: {
-            select: {
-                uuid: true,
-                name: true
+            uuid: true,
+            title: true,
+            descripion: true,
+            monetized: true,
+            created: true,
+            tag: true,
+            users: {
+                select: {
+                    uuid: true,
+                    name: true
+                }
             }
-        }
         },
     });
-    
+
     return videos;
 };
 
@@ -37,9 +37,14 @@ const getVideo = async (uuid: string) => {
             descripion: true,
             monetized: true,
             created: true,
-            tag: true,
+            tags: {
+                select: {
+                    name: true
+                }
+            },
             users: {
                 select: {
+                    uuid: true,
                     name: true
                 }
             }
@@ -49,7 +54,7 @@ const getVideo = async (uuid: string) => {
     return video;
 };
 
-const createVideo = async (title: string, description: string, monetized: boolean, tag: number, userUuid: string) => {   
+const createVideo = async (title: string, description: string, monetized: boolean, tag: number, userUuid: string) => {
     const video = await prisma.videos.create({
         data: {
             uuid: v4(),
@@ -66,10 +71,14 @@ const createVideo = async (title: string, description: string, monetized: boolea
             descripion: true,
             monetized: true,
             created: true,
-            tag: true,
+            tags: {
+                select: {
+                    name: true
+                }
+            },
         }
     });
-    
+
     return video;
 };
 
@@ -87,7 +96,7 @@ const updateVideo = async (video_uuid: string, user_uuid: string, title: string,
         },
     });
 
-    if(editQuery.count === 0) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Video not found");
+    if (editQuery.count === 0) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Video not found or not authorized to edit this video");
 
     const video = await prisma.videos.findFirst({
         where: {
@@ -96,6 +105,19 @@ const updateVideo = async (video_uuid: string, user_uuid: string, title: string,
     });
 
     return video;
+};
+
+const deleteVideo = async (video_uuid: string, user_uuid: string) => {
+    const deleteQuery = await prisma.videos.deleteMany({
+        where: {
+            uuid: video_uuid,
+            user_uuid: user_uuid,
+        },
+    });
+
+    if (deleteQuery.count === 0) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Video not found or not authorized to delete this video");
+
+    return deleteQuery;
 };
 
 const getVideoComments = async (video_uuid: string) => {
@@ -115,5 +137,6 @@ export default {
     getVideo,
     createVideo,
     updateVideo,
+    deleteVideo,
     getVideoComments,
 } as const;
