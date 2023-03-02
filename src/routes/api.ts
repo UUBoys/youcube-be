@@ -19,7 +19,9 @@ const apiRouter = Router(),
 const userRouter = Router();
 
 // Get user by UUID
-userRouter.get(Paths.Users.Get, UserRoutes.getUser);
+userRouter.get(Paths.Users.Get,
+  validate(["uuid", "string", "params"]),
+  UserRoutes.getUser);
 
 // Add UserRouter
 apiRouter.use(
@@ -54,19 +56,31 @@ const videoRouter = Router();
 videoRouter.get("", VideoRoutes.getVideos);
 
 // Get video by id
-videoRouter.get(Paths.Videos.Get, VideoRoutes.getVideoById);
+videoRouter.get(Paths.Videos.Get,
+  validate(["uuid", "string", "params"]),
+  VideoRoutes.getVideoById);
 
 // Create video
-videoRouter.post(Paths.Videos.Create, VideoRoutes.createVideo);
+videoRouter.post(Paths.Videos.Create,
+  validate(
+    "title", "description", ["monetized", "boolean"], ["tag", "number"]
+  ),
+  VideoRoutes.createVideo);
 
 // Update video
-videoRouter.post(Paths.Videos.Update, VideoRoutes.updateVideo);
+videoRouter.post(Paths.Videos.Update,
+  validate(["uuid", "string", "params"], "title", "description", ["monetized", "boolean"], ["tag", "number"]),
+  VideoRoutes.updateVideo);
 
 // Get comments by video UUID
-videoRouter.get(Paths.Videos.Comments, VideoRoutes.getVideoComments);
+videoRouter.get(Paths.Videos.Comments,
+  validate(["uuid", "string", "params"]),
+  VideoRoutes.getVideoComments);
 
 // Delete video
-videoRouter.delete(Paths.Videos.Delete, VideoRoutes.deleteVideo);
+videoRouter.delete(Paths.Videos.Delete,
+  validate(["uuid", "string", "params"]),
+  VideoRoutes.deleteVideo);
 
 // Add VideoRouter
 apiRouter.use(
@@ -80,13 +94,21 @@ apiRouter.use(
 const commentRouter = Router();
 
 // Create comment
-commentRouter.post(Paths.Comments.Create, CommentRoutes.createComment);
+commentRouter.post(Paths.Comments.Create,
+  validate("video_uuid", "message"),
+  CommentRoutes.createComment
+);
 
 // Update comment
-commentRouter.post(Paths.Comments.Update, CommentRoutes.updateComment);
+commentRouter.post(Paths.Comments.Update,
+  validate(["uuid", "string", "params"], "message"),
+  CommentRoutes.updateComment
+);
 
 // Delete comment
-commentRouter.delete(Paths.Comments.Delete, CommentRoutes.deleteComment);
+commentRouter.delete(Paths.Comments.Delete,
+  validate(["uuid", "string", "params"]),
+  CommentRoutes.deleteComment);
 
 // Add CommentRouter
 apiRouter.use(

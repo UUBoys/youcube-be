@@ -4,6 +4,7 @@ import SessionUtil from "@src/util/SessionUtil";
 import { RouteError } from "@src/other/classes";
 
 import { IReq, IRes } from "./types/express/misc";
+import CommentService from "@src/services/CommentService";
 
 // **** Types **** //
 interface ICreateVideoReq {
@@ -56,15 +57,15 @@ const deleteVideo = async (req: IReq, res: IRes) => {
 
     let jwtPayload = await SessionUtil.getJwtPayload(req);
 
-    const video = await VideoService.deleteVideo(uuid, jwtPayload.uuid);
+    await VideoService.deleteVideo(uuid, jwtPayload.uuid);
 
-    return res.status(200);
+    return res.status(200).send({ message: "Video deleted" });
 }
 
 const getVideoComments = async (req: IReq, res: IRes) => {
     const { uuid } = req.params;
 
-    const comments = await VideoService.getVideoComments(uuid);
+    const comments = await CommentService.getComments(uuid);
 
     return res.json(comments);
 }

@@ -40,7 +40,7 @@ const updateComment = async (req: IReq<IUpdateCommentReq>, res: IRes) => {
 
     let jwtPayload = await SessionUtil.getJwtPayload(req);
 
-    const comment = await CommentService.updateComment(uuid, message, jwtPayload.uuid);
+    const comment = await CommentService.updateComment(jwtPayload.uuid, uuid, message);
 
     return res.json(comment);
 }
@@ -50,9 +50,9 @@ const deleteComment = async (req: IReq, res: IRes) => {
 
     let jwtPayload = await SessionUtil.getJwtPayload(req);
 
-    const comment = await CommentService.deleteComment(uuid, jwtPayload.uuid);
+    await CommentService.deleteComment(jwtPayload.uuid, uuid);
 
-    return res.status(200);
+    return res.status(200).send({ message: "Comment deleted" });
 }
 
 export default {

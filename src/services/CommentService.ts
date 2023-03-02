@@ -16,15 +16,7 @@ const getComments = async (video_uuid: string) => {
             video_uuid: true,
             message: true,
             created: true,
-            comments: {
-                select: {
-                    uuid: true,
-                    parent_uuid: true,
-                    video_uuid: true,
-                    message: true,
-                    created: true,
-                },
-            },
+            other_comments: true,
             users: {
                 select: {
                     uuid: true,
@@ -52,9 +44,11 @@ const createComment = async (video_uuid: string, message: string, user_uuid: str
                     uuid: video_uuid
                 }
             },
-            comments: {
-                connect: {
-                    uuid: parent_comment
+            ...(parent_comment) && {
+                comments: {
+                    connect: {
+                        uuid: parent_comment
+                    }
                 }
             }
         }
@@ -64,7 +58,7 @@ const createComment = async (video_uuid: string, message: string, user_uuid: str
 }
 
 const updateComment = async (user_uuid: string, uuid: string, message: string) => {
-    const comment = await prisma.comments.updateMany({
+    const updateQuery = await prisma.comments.updateMany({
         where: {
             uuid: uuid,
             user_uuid: user_uuid
@@ -72,10 +66,21 @@ const updateComment = async (user_uuid: string, uuid: string, message: string) =
         data: {
             message: message,
             created: new Date()
-        }
+        },
     });
 
-    if (comment.count === 0) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Comment not found or you do not have permission to edit this comment");
+    if (updateQuery.count === 0) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Comment not found or you do not have permission to edit this comment");
+
+    const comment = await prisma.comments.findUnique({
+        where: {
+            uuid: uuid
+        },
+        select: {
+            uuid: true,
+            video_uuid: true,
+            message: true,
+        }
+    });
 
     return comment;
 }

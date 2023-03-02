@@ -71,6 +71,7 @@ const createVideo = async (title: string, description: string, monetized: boolea
             descripion: true,
             monetized: true,
             created: true,
+            user_uuid: true,
             tags: {
                 select: {
                     name: true
@@ -120,16 +121,6 @@ const deleteVideo = async (video_uuid: string, user_uuid: string) => {
     return deleteQuery;
 };
 
-const getVideoComments = async (video_uuid: string) => {
-    const comments = await prisma.comments.findMany({
-        where: {
-            video_uuid: video_uuid,
-        },
-    });
-
-    return comments;
-};
-
 // **** Export default **** //
 
 export default {
@@ -138,5 +129,4 @@ export default {
     createVideo,
     updateVideo,
     deleteVideo,
-    getVideoComments,
 } as const;
