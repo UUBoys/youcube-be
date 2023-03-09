@@ -21,9 +21,19 @@ const Paths = {
     Base: "/videos",
     Get: "/:uuid",
     Create: "/create",
-    Update: "/:uuid/",
+    Update: "/:uuid",
+    Delete: "/:uuid/delete",
     Comments: "/:uuid/comments",
   },
+  Comments: {
+    Base: "/comment",
+    Create: "/create",
+    Update: "/:uuid/update",
+    Delete: "/:uuid/delete",
+  },
+  Tags: {
+    Base: "/tags",
+  }
 };
 
 // **** Export **** //
