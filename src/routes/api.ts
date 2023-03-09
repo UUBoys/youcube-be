@@ -1,5 +1,6 @@
 import { Router } from "express";
 import jetValidator from "jet-validator";
+import { pathToRegexp } from "path-to-regexp";
 
 import Paths from "./constants/Paths";
 import AuthRoutes from "./AuthRoutes";
@@ -12,21 +13,37 @@ import TagRoutes from "./TagRoutes";
 
 // **** Variables **** //
 
+// **** Functions **** //
+const joinPaths = (...paths: string[]) => {
+  return paths.join("");
+};
+
+// **** Routers **** //
+
 const apiRouter = Router(),
   validate = jetValidator();
 
 // ** Add UserRouter ** //
 const userRouter = Router();
 
-// Get user by UUID
-userRouter.get(Paths.Users.Get,
-  validate(["uuid", "string", "params"]),
-  UserRoutes.getUser);
+// Get all users
+userRouter.get(Paths.Users.Get, UserRoutes.getUser);
+
+
+// Update user
+userRouter.post(Paths.Users.Update,
+  validate(["name", (name) => name === undefined || typeof name === "string"], ["email", (email) => email === undefined || typeof email === "string"], ["password", (password) => password === undefined || typeof password === "string"]),
+  UserRoutes.updateUser);
+
+// Excluded paths regex
+const excludedUserPaths = [
+  pathToRegexp(joinPaths(Paths.Base, Paths.Users.Base, Paths.Users.Get)),
+];
 
 // Add UserRouter
 apiRouter.use(
   Paths.Users.Base,
-  expressjwt({ secret: EnvVars.Jwt.Secret, algorithms: ["HS256"] }),
+  expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }),
   userRouter
 );
 
@@ -82,11 +99,17 @@ videoRouter.delete(Paths.Videos.Delete,
   validate(["uuid", "string", "params"]),
   VideoRoutes.deleteVideo);
 
+const excludedVideoPaths = [
+  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base, Paths.Videos.Get)),
+  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base, Paths.Videos.Comments)),
+  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base)),
+];
+
 // Add VideoRouter
 apiRouter.use(
   Paths.Videos.Base,
   expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] })
-    .unless({ path: [/^\/api\/videos\/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}\/comments$/, /^\/api\/videos\/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/, Paths.Base + Paths.Videos.Base] }),
+    .unless({ path: excludedVideoPaths }),
   videoRouter
 );
 
