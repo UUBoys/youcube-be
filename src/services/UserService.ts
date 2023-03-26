@@ -22,7 +22,8 @@ const getUser = async (uuid: string) => {
     },
   });
 
-  if (!user) throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR)
+  if (!user)
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
 
   return user;
 };
@@ -64,7 +65,12 @@ const createUser = async (email: string, password: string, name: string) => {
   return newUser;
 };
 
-const updateUser = async (uuid: string, name?: string, email?: string, password?: string) => {
+const updateUser = async (
+  uuid: string,
+  name?: string,
+  email?: string,
+  password?: string
+) => {
   // Salt and hash the password
   const hashedPassword = password ? await PwdUtil.getHash(password) : undefined;
 
@@ -85,9 +91,21 @@ const updateUser = async (uuid: string, name?: string, email?: string, password?
     },
   });
 
-  if (!updatedUser) throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
+  if (!updatedUser)
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
 
   return updatedUser;
+};
+
+// Delete user
+const deleteUser = async (uuid: string) => {
+  const userDelete = await prisma.users.delete({
+    where: {
+      uuid: uuid,
+    },
+  });
+
+  return userDelete;
 };
 // **** Export default **** //
 
@@ -96,4 +114,5 @@ export default {
   getUser,
   getUserByEmail,
   updateUser,
+  deleteUser,
 } as const;
