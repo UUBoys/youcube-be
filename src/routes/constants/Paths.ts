@@ -11,6 +11,7 @@ const Paths = {
     Base: "/users",
     Get: "/:uuid",
     Update: "/update",
+    Delete: "/delete",
   },
   Auth: {
     Base: "/auth",
@@ -33,7 +34,7 @@ const Paths = {
   },
   Tags: {
     Base: "/tags",
-  }
+  },
 };
 
 // **** Export **** //

@@ -105,6 +105,10 @@ const deleteUser = async (uuid: string) => {
     },
   });
 
+  if (!userDelete) {
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
+  }
+
   return userDelete;
 };
 // **** Export default **** //
