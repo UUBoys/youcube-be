@@ -10,7 +10,7 @@ const getVideos = async () => {
         select: {
             uuid: true,
             title: true,
-            descripion: true,
+            description: true,
             monetized: true,
             created: true,
             tag: true,
@@ -34,7 +34,7 @@ const getVideo = async (uuid: string) => {
         select: {
             uuid: true,
             title: true,
-            descripion: true,
+            description: true,
             monetized: true,
             created: true,
             tags: {
@@ -60,7 +60,7 @@ const createVideo = async (title: string, description: string, monetized: boolea
             uuid: v4(),
             created: new Date(),
             title: title,
-            descripion: description,
+            description: description,
             monetized: monetized,
             tag: tag,
             user_uuid: userUuid,
@@ -68,7 +68,7 @@ const createVideo = async (title: string, description: string, monetized: boolea
         select: {
             uuid: true,
             title: true,
-            descripion: true,
+            description: true,
             monetized: true,
             created: true,
             user_uuid: true,
@@ -91,7 +91,7 @@ const updateVideo = async (video_uuid: string, user_uuid: string, title: string,
         },
         data: {
             title: title,
-            descripion: description,
+            description: description,
             monetized: monetized,
             tag: tag,
         },

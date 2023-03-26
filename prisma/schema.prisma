@@ -107,7 +107,7 @@ model videos {
   user_uuid       String           @db.Char(36)
   monetized       Boolean          @default(false)
   title           String           @db.Char(200)
-  descripion      String           @db.VarChar(255)
+  description     String           @db.VarChar(255)
   tag             Int              @db.SmallInt
   created         DateTime         @default(now()) @db.DateTime(0)
   comments        comments[]

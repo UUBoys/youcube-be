@@ -10,7 +10,7 @@ const Paths = {
   Users: {
     Base: "/users",
     Get: "/:uuid",
-    Update: "/:uuid/update",
+    Update: "/update",
   },
   Auth: {
     Base: "/auth",
