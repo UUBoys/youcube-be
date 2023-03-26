@@ -7,7 +7,6 @@ import AuthRoutes from "./AuthRoutes";
 import UserRoutes from "./UserRoutes";
 import VideoRoutes from "./VideoRoutes";
 import { expressjwt } from "express-jwt";
-import EnvVars from "@src/constants/EnvVars";
 import CommentRoutes from "./CommentRoutes";
 import TagRoutes from "./TagRoutes";
 
@@ -26,7 +25,7 @@ const apiRouter = Router(),
 // ** Add UserRouter ** //
 const userRouter = Router();
 
-// Get all users
+// Get user
 userRouter.get(Paths.Users.Get, UserRoutes.getUser);
 
 
@@ -43,7 +42,7 @@ const excludedUserPaths = [
 // Add UserRouter
 apiRouter.use(
   Paths.Users.Base,
-  expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }),
+  expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }).unless({ path: excludedUserPaths }),
   userRouter
 );
 

@@ -5,7 +5,7 @@
 import { Immutable } from "@src/other/types";
 
 const Paths = {
-  Swagger: "/",
+  Swagger: "/swagger",
   Base: "/api",
   Users: {
     Base: "/users",
@@ -33,7 +33,7 @@ const Paths = {
   },
   Tags: {
     Base: "/tags",
-  }
+  },
 };
 
 // **** Export **** //

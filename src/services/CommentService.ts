@@ -16,7 +16,20 @@ const getComments = async (video_uuid: string) => {
             video_uuid: true,
             message: true,
             created: true,
-            other_comments: true,
+            other_comments: {
+                select: {
+                    uuid: true,
+                    video_uuid: true,
+                    message: true,
+                    created: true,
+                    users: {
+                        select: {
+                            uuid: true,
+                            name: true
+                        }
+                    }
+                }
+            },
             users: {
                 select: {
                     uuid: true,
@@ -30,6 +43,14 @@ const getComments = async (video_uuid: string) => {
 }
 
 const createComment = async (video_uuid: string, message: string, user_uuid: string, parent_comment?: string) => {
+    const video = await prisma.videos.findUnique({
+        where: {
+            uuid: video_uuid
+        }
+    });
+
+    if(!video) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Video not found");
+    
     const comment = await prisma.comments.create({
         data: {
             uuid: v4(),
