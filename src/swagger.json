@@ -1,362 +1,372 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
-    "version": "1.0.0",
-    "title": "Youcube"
+    "description": "Swagger Youcube",
+    "version": "0.1.0",
+    "title": "Youcube",
+    "contact": {
+      "name": "UUBoys"
+    }
   },
-  "host": "youcube-be.azurewebsites.net",
-  "schemes": ["https", "http"],
-  "definitions": {
-    "User": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "verified": {
-          "type": "boolean"
-        },
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string",
-          "format": "email"
-        },
-        "password": {
-          "type": "string",
-          "optional": true
-        }
-      }
+  "tags": [
+    {
+      "name": "Authorization",
+      "description": "/auth"
     },
-    "UserPost": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string",
-          "format": "email"
-        },
-        "password": {
-          "type": "string",
-          "optional": true
-        }
-      }
+    {
+      "name": "Users",
+      "description": "/users"
     },
-    "Comment": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "user": {
-          "$ref": "#/definitions/User"
-        },
-        "parent_uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "video_uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "message": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
+    {
+      "name": "Videos",
+      "description": "/videos"
     },
-    "CommentPost": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "parent_uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "video_uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
+    {
+      "name": "Comments",
+      "description": "/comment"
     },
-    "Tag": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
+    {
+      "name": "Tags",
+      "description": "/tags"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Tato cesta registruje nové uživatele\n",
+        "operationId": "authregister",
+        "tags": [
+          "Authorization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "name",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name of user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password"
+                  }
+                }
+              }
+            }
+          }
         },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "Video": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "user": { "$ref": "#/definitions/User" },
-        "tag": {
-          "$ref": "#/definitions/Tag"
-        },
-        "monetized": {
-          "type": "boolean"
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    },
-    "VideoPut": {
-      "type": "object",
-      "properties": {
-        "user": { "type": "string", "format": "uuid" },
-        "tag": {
-          "type": "string"
-        },
-        "monetized": {
-          "type": "boolean"
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    },
-    "Playlist": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "user": {
-          "$ref": "#/definitions/User"
-        },
-        "videos": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Video"
+        "responses": {
+          "200": {
+            "description": "User has been created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "uuid": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "jwt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already exists"
           }
         }
       }
     },
-    "Login": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string",
-          "format": "email"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
-    "Register": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string",
-          "format": "email"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    }
-  },
-  "paths": {
-    "/users": {
-      "get": {
-        "tags": ["Users"],
-        "summary": "Get users",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": [
+          "Authorization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password"
+                  }
+                }
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Correct login, JWT returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "uuid": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "jwt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Wrong email or password"
           }
         }
       }
     },
     "/users/{uuid}": {
       "get": {
-        "tags": ["Users"],
         "summary": "Get user by UUID",
+        "tags": [
+          "Users"
+        ],
         "parameters": [
           {
-            "name": "uuid",
             "in": "path",
-            "description": "ID of the person to retrieve",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          },
-          "404": {
-            "description": "Person not found"
-          }
-        }
-      }
-    },
-    "/users/{uuid}/create": {
-      "put": {
-        "tags": ["Users"],
-        "summary": "Create user",
-        "parameters": [
-          {
-            "name": "User",
-            "in": "body",
-            "description": "User object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/UserPost"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User was successfully created",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        }
-      }
-    },
-    "/users/{uuid}/update": {
-      "post": {
-        "tags": ["Users"],
-        "summary": "Update user by UUID",
-        "parameters": [
-          {
             "name": "uuid",
-            "in": "path",
-            "description": "UUID of the user",
-            "required": true
-          },
-          {
-            "name": "user",
-            "in": "body",
-            "description": "User object",
+            "schema": {
+              "type": "string"
+            },
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/UserPost"
-            }
+            "description": "UUID of user"
           }
         ],
         "responses": {
           "200": {
-            "description": "User was successfully updated",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-
-    "/users/{uuid}/videos": {
-      "get": {
-        "tags": ["Users"],
-        "summary": "Get user videos",
-        "parameters": [
-          {
-            "name": "uuid",
-            "in": "path",
-            "description": "UUID of the user",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Video"
+            "description": "Returns user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "uuid": {
+                      "type": "string"
+                    },
+                    "videos": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "uuid": {
+                            "type": "string"
+                          },
+                          "user_uuid": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "monetized": {
+                            "type": "boolean"
+                          },
+                          "created": {
+                            "type": "string"
+                          },
+                          "tag": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           },
           "404": {
-            "description": "User not found"
+            "description": "No user found"
           }
         }
       }
     },
-
-    "/users/{uuid}/delete": {
-      "delete": {
-        "tags": ["Users"],
-        "summary": "Get user by UUID",
-        "parameters": [
+    "/users/update": {
+      "post": {
+        "summary": "Update logged in user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
           {
-            "name": "uuid",
-            "in": "path",
-            "description": "ID of the person to retrieve",
-            "required": true,
-            "type": "string"
+            "BearerAuth": []
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name of user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Returns user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "uuid": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "jwt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No data to update (empty request body)"
           },
           "404": {
-            "description": "User not found"
+            "description": "No user found"
           }
         }
       }
     },
     "/videos": {
       "get": {
-        "tags": ["Videos"],
-        "summary": "Get videos",
+        "summary": "Get all videos",
+        "tags": [
+          "Videos"
+        ],
         "responses": {
           "200": {
-            "description": "Successful response",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Video"
+            "description": "Returns videos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "uuid": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "monetized": {
+                        "type": "boolean"
+                      },
+                      "created": {
+                        "type": "string"
+                      },
+                      "tag": {
+                        "type": "integer"
+                      },
+                      "users": {
+                        "type": "object",
+                        "properties": {
+                          "uuid": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -365,137 +375,437 @@
     },
     "/videos/{uuid}": {
       "get": {
-        "tags": ["Videos"],
         "summary": "Get video by UUID",
+        "tags": [
+          "Videos"
+        ],
         "parameters": [
           {
-            "name": "uuid",
             "in": "path",
-            "description": "Get video by UUID",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
             "required": true,
-            "type": "string"
+            "description": "UUID of video"
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/Video"
+            "description": "Returns Video by UUID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "monetized": {
+                      "type": "boolean"
+                    },
+                    "created": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "integer"
+                    },
+                    "users": {
+                      "type": "object",
+                      "properties": {
+                        "uuid": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           },
           "404": {
-            "description": "Video not found"
+            "description": "This video has not been found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Update video by UUID",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": [
+          "Videos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of video"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the video"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the video"
+                  },
+                  "monetized": {
+                    "type": "boolean",
+                    "description": "True if the video is monetized"
+                  },
+                  "tag": {
+                    "type": "integer",
+                    "description": "ID of the specified tag"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returned video object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "monetized": {
+                      "type": "boolean"
+                    },
+                    "created": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "integer"
+                    },
+                    "users": {
+                      "type": "object",
+                      "properties": {
+                        "uuid": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video has not been found or the user is not authorized to edit it"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete video by UUID",
+        "tags": [
+          "Videos"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of video"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Video has been deleted"
+          },
+          "404": {
+            "description": "Video has not been found or the user is not authorized to delete it"
           }
         }
       }
     },
     "/videos/create": {
-      "put": {
-        "tags": ["Videos"],
-        "summary": "Create new video",
-        "parameters": [
-          {
-            "name": "Video",
-            "in": "body",
-            "description": "Video object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/VideoPut"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Video was successfully created",
-            "schema": {
-              "$ref": "#/definitions/Video"
-            }
-          }
-        }
-      }
-    },
-    "/video/{uuid}": {
       "post": {
-        "tags": ["Videos"],
-        "summary": "Update video by UUID",
-        "parameters": [
+        "summary": "Create a video",
+        "tags": [
+          "Videos"
+        ],
+        "security": [
           {
-            "name": "uuid",
-            "in": "path",
-            "description": "UUID of the video",
-            "required": true
-          },
-          {
-            "name": "video",
-            "in": "body",
-            "description": "Video object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/VideoPut"
-            }
+            "BearerAuth": []
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Video was successfully updated",
-            "schema": {
-              "$ref": "#/definitions/Video"
-            }
-          },
-          "404": {
-            "description": "Video not found"
-          }
-        }
-      }
-    },
-    "/video/{uuid}/comments": {
-      "get": {
-        "tags": ["Comments", "Videos"],
-        "summary": "Get video comments by video UUID",
-        "parameters": [
-          {
-            "name": "uuid",
-            "in": "path",
-            "description": "UUID of the video",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Comment"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "description",
+                  "monetized",
+                  "tag"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the video"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the video"
+                  },
+                  "monetized": {
+                    "type": "boolean",
+                    "description": "True if the video is monetized"
+                  },
+                  "tag": {
+                    "type": "integer",
+                    "description": "ID of the specified tag"
+                  }
+                }
               }
             }
-          },
-          "404": {
-            "description": "Video not found"
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Creates a video and returns it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string"
+                    },
+                    "user_uuid": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "monetized": {
+                      "type": "boolean"
+                    },
+                    "created": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/videos/{uuid}/comments": {
+      "get": {
+        "summary": "Get video comments",
+        "tags": [
+          "Videos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of video"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prints out all comments for given video",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "uuid": {
+                        "type": "string"
+                      },
+                      "video_uuid": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "created": {
+                        "type": "string"
+                      },
+                      "other_comments": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "uuid": {
+                              "type": "string"
+                            },
+                            "video_uuid": {
+                              "type": "string"
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "created": {
+                              "type": "string"
+                            },
+                            "users": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "uuid": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "users": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "uuid": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/comment/create": {
-      "put": {
-        "tags": ["Comments"],
-        "summary": "Create new comment",
-        "parameters": [
+      "post": {
+        "summary": "Create comment",
+        "tags": [
+          "Comments"
+        ],
+        "security": [
           {
-            "name": "Comment",
-            "in": "body",
-            "description": "Comment object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CommentPost"
-            }
+            "BearerAuth": []
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "video_uuid",
+                  "messsage"
+                ],
+                "properties": {
+                  "parent_uuid": {
+                    "type": "string",
+                    "description": "UUID of parent comment"
+                  },
+                  "video_uuid": {
+                    "type": "string",
+                    "description": "UUID of video to append the comment on"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Comment itself"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Comment was successfully created",
-            "schema": {
-              "$ref": "#/definitions/Comment"
+            "description": "Comment has been created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string"
+                    },
+                    "parent_uuid": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "user_uuid": {
+                      "type": "string"
+                    },
+                    "video_uuid": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "created": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -503,155 +813,320 @@
     },
     "/comment/{uuid}/update": {
       "post": {
-        "tags": ["Comments"],
-        "summary": "Update comment by UUID",
-        "parameters": [
+        "summary": "Update Comment",
+        "tags": [
+          "Comments"
+        ],
+        "security": [
           {
-            "name": "uuid",
-            "in": "path",
-            "description": "UUID of the comment",
-            "required": true
-          },
-          {
-            "name": "comment",
-            "in": "body",
-            "description": "Comment object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CommentPost"
-            }
+            "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of the comment"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "Comment itself"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Comment was successfully updated",
-            "schema": {
-              "$ref": "#/definitions/Comment"
+            "description": "Comment has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string"
+                    },
+                    "video_uuid": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
             }
           },
           "404": {
-            "description": "Comment not found"
+            "description": "Comment has not been found or not author of the comment"
           }
         }
       }
     },
-    "/comment/{uuid}/delete": {
+    "/comment{uuid}/delete": {
       "delete": {
-        "tags": ["Comments"],
-        "summary": "Deletecomment by UUID",
+        "summary": "Delete comment",
+        "tags": [
+          "Comments"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "uuid",
             "in": "path",
-            "description": "UUID of the comment",
-            "required": true
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of the comment"
           }
         ],
         "responses": {
           "200": {
-            "description": "Comment was successfully deleted"
+            "description": "Comment has been deleted"
           },
           "404": {
-            "description": "Comment not found"
+            "description": "No comment found or no permission to delete"
           }
         }
       }
     },
     "/tags": {
       "get": {
-        "tags": ["Tags"],
-        "summary": "Get tags",
+        "summary": "Get all tags",
+        "tags": [
+          "Tags"
+        ],
         "responses": {
           "200": {
-            "description": "Successful response",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Tag"
+            "description": "Returns all tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
+    }
+  },
+  "externalDocs": {
+    "description": "Youcube backend source",
+    "url": "https://github.com/UUBoys/youcube-be"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:3000/api"
     },
-    "/tags/{uuid}": {
-      "get": {
-        "tags": ["Tags"],
-        "summary": "Get tag by UUID",
-        "parameters": [
-          {
-            "name": "uuid",
-            "in": "path",
-            "description": "UUID of tags",
-            "required": true,
+    {
+      "url": "https://youcube-be.azurewebsites.net/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Video": {
+        "type": "object",
+        "properties": {
+          "uuid": {
             "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/Video"
-            }
           },
-          "404": {
-            "description": "Tag not found"
+          "user_uuid": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "monetized": {
+            "type": "boolean"
+          },
+          "created": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "integer"
           }
         }
-      }
-    },
-    "/login": {
-      "post": {
-        "tags": ["Authentification"],
-        "summary": "Login user",
-        "parameters": [
-          {
-            "name": "Login",
-            "in": "body",
-            "description": "Login object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Login"
-            }
-          }
+      },
+      "UserRegister": {
+        "type": "object",
+        "required": [
+          "email",
+          "name",
+          "password"
         ],
-        "responses": {
-          "200": {
-            "description": "User was successfully logged in",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email"
           },
-          "404": {
-            "description": "User not found"
+          "name": {
+            "type": "string",
+            "description": "Name of user"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password"
           }
         }
-      }
-    },
-    "/register": {
-      "post": {
-        "tags": ["Authentification"],
-        "summary": "Register new user",
-        "parameters": [
-          {
-            "name": "Register",
-            "in": "body",
-            "description": "Register object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Register"
-            }
-          }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
         ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email"
           },
-          "409": {
-            "description": "User already exists"
+          "password": {
+            "type": "string",
+            "description": "User password"
+          }
+        }
+      },
+      "UserUpdate": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of user"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password"
+          }
+        }
+      },
+      "CommentCreate": {
+        "type": "object",
+        "required": [
+          "video_uuid",
+          "messsage"
+        ],
+        "properties": {
+          "parent_uuid": {
+            "type": "string",
+            "description": "UUID of parent comment"
+          },
+          "video_uuid": {
+            "type": "string",
+            "description": "UUID of video to append the comment on"
+          },
+          "message": {
+            "type": "string",
+            "description": "Comment itself"
+          }
+        }
+      },
+      "CommentUpdate": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Comment itself"
+          }
+        }
+      },
+      "VideoCreate": {
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "monetized",
+          "tag"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the video"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the video"
+          },
+          "monetized": {
+            "type": "boolean",
+            "description": "True if the video is monetized"
+          },
+          "tag": {
+            "type": "integer",
+            "description": "ID of the specified tag"
+          }
+        }
+      },
+      "VideoUpdate": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the video"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the video"
+          },
+          "monetized": {
+            "type": "boolean",
+            "description": "True if the video is monetized"
+          },
+          "tag": {
+            "type": "integer",
+            "description": "ID of the specified tag"
           }
         }
       }

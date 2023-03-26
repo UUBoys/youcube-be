@@ -1,6 +1,7 @@
 import HttpStatusCodes from "@src/constants/HttpStatusCodes";
 import AuthService from "@src/services/AuthService";
 import UserService from "@src/services/UserService";
+import { RouteError } from "@src/other/classes";
 
 import { IReq, IRes } from "./types/express/misc";
 
@@ -25,9 +26,7 @@ const login = async (req: IReq<ILoginReq>, res: IRes) => {
   const jwtToken = await AuthService.loginUser(email, password);
 
   if (!jwtToken) {
-    return res.status(HttpStatusCodes.UNAUTHORIZED).json({
-      message: "Wrong email or password",
-    });
+    throw new RouteError(HttpStatusCodes.UNAUTHORIZED, "Wrong email or password")
   }
 
   const user = await UserService.getUserByEmail(email);
@@ -44,10 +43,7 @@ const register = async (req: IReq<IRegisterReq>, res: IRes) => {
   const userExists = await UserService.getUserByEmail(email);
 
   if (userExists) {
-    res.status(409);
-    return res.json({
-      message: "User already exists",
-    });
+    throw new RouteError(HttpStatusCodes.CONFLICT, "User already exists");
   }
 
   const newUser = await UserService.createUser(email, password, name);
