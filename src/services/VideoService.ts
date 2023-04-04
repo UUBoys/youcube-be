@@ -11,6 +11,7 @@ const getVideos = async () => {
       uuid: true,
       title: true,
       description: true,
+      url: true,
       monetized: true,
       created: true,
       tag: true,
@@ -50,29 +51,37 @@ const getVideo = async (uuid: string) => {
   return video;
 };
 
-const createVideo = async (title: string, description: string, monetized: boolean, tag: number, userUuid: string) => {
-    const video = await prisma.videos.create({
-        data: {
-            uuid: v4(),
-            created: new Date(),
-            title: title,
-            description: description,
-            monetized: monetized,
-            tag: tag,
-            user_uuid: userUuid,
-        },
-        select: {
-            uuid: true,
-            title: true,
-            description: true,
-            monetized: true,
-            created: true,
-            user_uuid: true,
-            tags: true,
-        }
-    });
+const createVideo = async (
+  title: string,
+  description: string,
+  url: string,
+  monetized: boolean,
+  tag: number,
+  userUuid: string
+) => {
+  const video = await prisma.videos.create({
+    data: {
+      uuid: v4(),
+      created: new Date(),
+      title: title,
+      description: description,
+      monetized: monetized,
+      url: url,
+      tag: tag,
+      user_uuid: userUuid,
+    },
+    select: {
+      uuid: true,
+      title: true,
+      description: true,
+      monetized: true,
+      created: true,
+      user_uuid: true,
+      tags: true,
+    },
+  });
 
-    return video;
+  return video;
 };
 
 const updateVideo = async (
