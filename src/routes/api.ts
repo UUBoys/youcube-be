@@ -9,13 +9,8 @@ import VideoRoutes from "./VideoRoutes";
 import { expressjwt } from "express-jwt";
 import CommentRoutes from "./CommentRoutes";
 import TagRoutes from "./TagRoutes";
-
-// **** Variables **** //
-
-// **** Functions **** //
-const joinPaths = (...paths: string[]) => {
-  return paths.join("");
-};
+import getFullPaths from "./constants/FullPaths";
+import PlaylistRoutes from "./PlaylistRoutes";
 
 // **** Routers **** //
 
@@ -43,9 +38,7 @@ userRouter.post(
 );
 
 // Excluded paths regex
-const excludedUserPaths = [
-  pathToRegexp(joinPaths(Paths.Base, Paths.Users.Base, Paths.Users.Get)),
-];
+const excludedUserPaths = [pathToRegexp(getFullPaths.Users.Get)];
 
 // Add UserRouter
 apiRouter.use(
@@ -130,9 +123,9 @@ videoRouter.delete(
 );
 
 const excludedVideoPaths = [
-  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base, Paths.Videos.Get)),
-  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base, Paths.Videos.Comments)),
-  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base)),
+  pathToRegexp(getFullPaths.Videos.Get),
+  pathToRegexp(getFullPaths.Videos.Comments),
+  pathToRegexp(getFullPaths.Videos.Base),
 ];
 
 // Add VideoRouter
@@ -175,6 +168,75 @@ apiRouter.use(
   expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }),
   commentRouter
 );
+
+// ** Add PlaylistRouter ** //
+const playlistRouter = Router();
+
+// Get playlist by UUID
+playlistRouter.get(
+  Paths.Playlists.Get,
+  validate(["uuid", "string", "params"]),
+  PlaylistRoutes.getPlaylist
+);
+
+// Get playlists by user UUID
+playlistRouter.get(
+  Paths.Playlists.GetByUser,
+  validate(["uuid", "string", "params"]),
+  PlaylistRoutes.getUserPlaylists
+);
+
+// Create playlist
+playlistRouter.post(
+  Paths.Playlists.Create,
+  validate("title", [
+    "description",
+    (description) =>
+      typeof description === "string" || description === undefined,
+  ]),
+  PlaylistRoutes.createPlaylist
+);
+
+// Delete playlist
+playlistRouter.delete(
+  Paths.Playlists.Delete,
+  validate(["uuid", "string", "params"]),
+  PlaylistRoutes.deletePlaylist
+);
+
+// Add videos to playlist
+playlistRouter.post(
+  Paths.Playlists.Add,
+  validate(
+    ["uuid", "string", "params"],
+    [
+      "video_uuids",
+      (video_uuids) =>
+        Array.isArray(video_uuids) &&
+        video_uuids.every((video_uuid) => typeof video_uuid === "string"),
+    ],
+    "playlist_uuid"
+  ),
+  PlaylistRoutes.addVideosToPlaylist
+);
+
+// Remove videos from playlist
+playlistRouter.delete(
+  Paths.Playlists.Remove,
+  validate(
+    ["uuid", "string", "params"],
+    [
+      "video_uuids",
+      (video_uuids) =>
+        Array.isArray(video_uuids) &&
+        video_uuids.every((video_uuid) => typeof video_uuid === "string"),
+    ],
+    "playlist_uuid"
+  ),
+  PlaylistRoutes.removeVideosFromPlaylist
+);
+
+apiRouter.use(Paths.Playlists.Base, playlistRouter);
 
 // ** Add TagRouter ** //
 const tagRouter = Router();
