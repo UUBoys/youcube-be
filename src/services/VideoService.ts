@@ -38,11 +38,23 @@ const getVideo = async (uuid: string) => {
       description: true,
       monetized: true,
       created: true,
-      tags: true,
       users: {
         select: {
           uuid: true,
           name: true,
+        },
+      },
+      comments: {
+        select: {
+          uuid: true,
+          created: true,
+          message: true,
+          users: {
+            select: {
+              uuid: true,
+              name: true,
+            },
+          },
         },
       },
     },
@@ -59,6 +71,8 @@ const createVideo = async (
   tag: number,
   userUuid: string
 ) => {
+  console.log(url);
+
   const video = await prisma.videos.create({
     data: {
       uuid: v4(),
@@ -69,15 +83,6 @@ const createVideo = async (
       url: url,
       tag: tag,
       user_uuid: userUuid,
-    },
-    select: {
-      uuid: true,
-      title: true,
-      description: true,
-      monetized: true,
-      created: true,
-      user_uuid: true,
-      tags: true,
     },
   });
 

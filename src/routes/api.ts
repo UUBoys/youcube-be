@@ -28,11 +28,19 @@ const userRouter = Router();
 // Get user
 userRouter.get(Paths.Users.Get, UserRoutes.getUser);
 
-
 // Update user
-userRouter.post(Paths.Users.Update,
-  validate(["name", (name) => name === undefined || typeof name === "string"], ["email", (email) => email === undefined || typeof email === "string"], ["password", (password) => password === undefined || typeof password === "string"]),
-  UserRoutes.updateUser);
+userRouter.post(
+  Paths.Users.Update,
+  validate(
+    ["name", (name) => name === undefined || typeof name === "string"],
+    ["email", (email) => email === undefined || typeof email === "string"],
+    [
+      "password",
+      (password) => password === undefined || typeof password === "string",
+    ]
+  ),
+  UserRoutes.updateUser
+);
 
 // Excluded paths regex
 const excludedUserPaths = [
@@ -42,7 +50,10 @@ const excludedUserPaths = [
 // Add UserRouter
 apiRouter.use(
   Paths.Users.Base,
-  expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }).unless({ path: excludedUserPaths }),
+  expressjwt({
+    secret: process.env.JWT_SECRET ?? "",
+    algorithms: ["HS256"],
+  }).unless({ path: excludedUserPaths }),
   userRouter
 );
 
@@ -72,31 +83,51 @@ const videoRouter = Router();
 videoRouter.get("", VideoRoutes.getVideos);
 
 // Get video by id
-videoRouter.get(Paths.Videos.Get,
+videoRouter.get(
+  Paths.Videos.Get,
   validate(["uuid", "string", "params"]),
-  VideoRoutes.getVideoById);
+  VideoRoutes.getVideoById
+);
 
 // Create video
-videoRouter.post(Paths.Videos.Create,
+videoRouter.post(
+  Paths.Videos.Create,
   validate(
-    "title", "description", ["monetized", "boolean"], ["tag", "number"]
+    "title",
+    "description",
+    "url",
+    ["monetized", "boolean"],
+    ["tag", "number"]
   ),
-  VideoRoutes.createVideo);
+  VideoRoutes.createVideo
+);
 
 // Update video
-videoRouter.post(Paths.Videos.Update,
-  validate(["uuid", "string", "params"], "title", "description", ["monetized", "boolean"], ["tag", "number"]),
-  VideoRoutes.updateVideo);
+videoRouter.post(
+  Paths.Videos.Update,
+  validate(
+    ["uuid", "string", "params"],
+    "title",
+    "description",
+    ["monetized", "boolean"],
+    ["tag", "number"]
+  ),
+  VideoRoutes.updateVideo
+);
 
 // Get comments by video UUID
-videoRouter.get(Paths.Videos.Comments,
+videoRouter.get(
+  Paths.Videos.Comments,
   validate(["uuid", "string", "params"]),
-  VideoRoutes.getVideoComments);
+  VideoRoutes.getVideoComments
+);
 
 // Delete video
-videoRouter.delete(Paths.Videos.Delete,
+videoRouter.delete(
+  Paths.Videos.Delete,
   validate(["uuid", "string", "params"]),
-  VideoRoutes.deleteVideo);
+  VideoRoutes.deleteVideo
+);
 
 const excludedVideoPaths = [
   pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base, Paths.Videos.Get)),
@@ -107,8 +138,10 @@ const excludedVideoPaths = [
 // Add VideoRouter
 apiRouter.use(
   Paths.Videos.Base,
-  expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] })
-    .unless({ path: excludedVideoPaths }),
+  expressjwt({
+    secret: process.env.JWT_SECRET ?? "",
+    algorithms: ["HS256"],
+  }).unless({ path: excludedVideoPaths }),
   videoRouter
 );
 
@@ -116,21 +149,25 @@ apiRouter.use(
 const commentRouter = Router();
 
 // Create comment
-commentRouter.post(Paths.Comments.Create,
+commentRouter.post(
+  Paths.Comments.Create,
   validate("video_uuid", "message"),
   CommentRoutes.createComment
 );
 
 // Update comment
-commentRouter.post(Paths.Comments.Update,
+commentRouter.post(
+  Paths.Comments.Update,
   validate(["uuid", "string", "params"], "message"),
   CommentRoutes.updateComment
 );
 
 // Delete comment
-commentRouter.delete(Paths.Comments.Delete,
+commentRouter.delete(
+  Paths.Comments.Delete,
   validate(["uuid", "string", "params"]),
-  CommentRoutes.deleteComment);
+  CommentRoutes.deleteComment
+);
 
 // Add CommentRouter
 apiRouter.use(

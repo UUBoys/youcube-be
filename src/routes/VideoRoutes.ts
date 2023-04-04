@@ -11,7 +11,7 @@ interface ICreateVideoReq {
   title: string;
   description: string;
   monetized: boolean;
-  video_url: string;
+  url: string;
   tag: number;
 }
 
@@ -40,14 +40,14 @@ const getVideos = async (req: IReq, res: IRes) => {
 };
 
 const createVideo = async (req: IReq<ICreateVideoReq>, res: IRes) => {
-  const { title, description, monetized, tag, video_url } = req.body;
+  const { title, description, monetized, tag, url } = req.body;
 
   let jwtPayload = await SessionUtil.getJwtPayload(req);
 
   const video = await VideoService.createVideo(
     title,
     description,
-    video_url,
+    url,
     monetized,
     tag,
     jwtPayload.uuid
