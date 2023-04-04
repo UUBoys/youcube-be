@@ -9,13 +9,8 @@ import VideoRoutes from "./VideoRoutes";
 import { expressjwt } from "express-jwt";
 import CommentRoutes from "./CommentRoutes";
 import TagRoutes from "./TagRoutes";
-
-// **** Variables **** //
-
-// **** Functions **** //
-const joinPaths = (...paths: string[]) => {
-  return paths.join("");
-};
+import getFullPaths from "./constants/FullPaths";
+import PlaylistRoutes from "./PlaylistRoutes";
 
 // **** Routers **** //
 
@@ -28,21 +23,30 @@ const userRouter = Router();
 // Get user
 userRouter.get(Paths.Users.Get, UserRoutes.getUser);
 
-
 // Update user
-userRouter.post(Paths.Users.Update,
-  validate(["name", (name) => name === undefined || typeof name === "string"], ["email", (email) => email === undefined || typeof email === "string"], ["password", (password) => password === undefined || typeof password === "string"]),
-  UserRoutes.updateUser);
+userRouter.post(
+  Paths.Users.Update,
+  validate(
+    ["name", (name) => name === undefined || typeof name === "string"],
+    ["email", (email) => email === undefined || typeof email === "string"],
+    [
+      "password",
+      (password) => password === undefined || typeof password === "string",
+    ]
+  ),
+  UserRoutes.updateUser
+);
 
 // Excluded paths regex
-const excludedUserPaths = [
-  pathToRegexp(joinPaths(Paths.Base, Paths.Users.Base, Paths.Users.Get)),
-];
+const excludedUserPaths = [pathToRegexp(getFullPaths.Users.Get)];
 
 // Add UserRouter
 apiRouter.use(
   Paths.Users.Base,
-  expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }).unless({ path: excludedUserPaths }),
+  expressjwt({
+    secret: process.env.JWT_SECRET ?? "",
+    algorithms: ["HS256"],
+  }).unless({ path: excludedUserPaths }),
   userRouter
 );
 
@@ -72,43 +76,59 @@ const videoRouter = Router();
 videoRouter.get("", VideoRoutes.getVideos);
 
 // Get video by id
-videoRouter.get(Paths.Videos.Get,
+videoRouter.get(
+  Paths.Videos.Get,
   validate(["uuid", "string", "params"]),
-  VideoRoutes.getVideoById);
+  VideoRoutes.getVideoById
+);
 
 // Create video
-videoRouter.post(Paths.Videos.Create,
-  validate(
-    "title", "description", ["monetized", "boolean"], ["tag", "number"]
-  ),
-  VideoRoutes.createVideo);
+videoRouter.post(
+  Paths.Videos.Create,
+  validate("title", "description", ["monetized", "boolean"], ["tag", "number"]),
+  VideoRoutes.createVideo
+);
 
 // Update video
-videoRouter.post(Paths.Videos.Update,
-  validate(["uuid", "string", "params"], "title", "description", ["monetized", "boolean"], ["tag", "number"]),
-  VideoRoutes.updateVideo);
+videoRouter.post(
+  Paths.Videos.Update,
+  validate(
+    ["uuid", "string", "params"],
+    "title",
+    "description",
+    ["monetized", "boolean"],
+    ["tag", "number"]
+  ),
+  VideoRoutes.updateVideo
+);
 
 // Get comments by video UUID
-videoRouter.get(Paths.Videos.Comments,
+videoRouter.get(
+  Paths.Videos.Comments,
   validate(["uuid", "string", "params"]),
-  VideoRoutes.getVideoComments);
+  VideoRoutes.getVideoComments
+);
 
 // Delete video
-videoRouter.delete(Paths.Videos.Delete,
+videoRouter.delete(
+  Paths.Videos.Delete,
   validate(["uuid", "string", "params"]),
-  VideoRoutes.deleteVideo);
+  VideoRoutes.deleteVideo
+);
 
 const excludedVideoPaths = [
-  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base, Paths.Videos.Get)),
-  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base, Paths.Videos.Comments)),
-  pathToRegexp(joinPaths(Paths.Base, Paths.Videos.Base)),
+  pathToRegexp(getFullPaths.Videos.Get),
+  pathToRegexp(getFullPaths.Videos.Comments),
+  pathToRegexp(getFullPaths.Videos.Base),
 ];
 
 // Add VideoRouter
 apiRouter.use(
   Paths.Videos.Base,
-  expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] })
-    .unless({ path: excludedVideoPaths }),
+  expressjwt({
+    secret: process.env.JWT_SECRET ?? "",
+    algorithms: ["HS256"],
+  }).unless({ path: excludedVideoPaths }),
   videoRouter
 );
 
@@ -116,21 +136,25 @@ apiRouter.use(
 const commentRouter = Router();
 
 // Create comment
-commentRouter.post(Paths.Comments.Create,
+commentRouter.post(
+  Paths.Comments.Create,
   validate("video_uuid", "message"),
   CommentRoutes.createComment
 );
 
 // Update comment
-commentRouter.post(Paths.Comments.Update,
+commentRouter.post(
+  Paths.Comments.Update,
   validate(["uuid", "string", "params"], "message"),
   CommentRoutes.updateComment
 );
 
 // Delete comment
-commentRouter.delete(Paths.Comments.Delete,
+commentRouter.delete(
+  Paths.Comments.Delete,
   validate(["uuid", "string", "params"]),
-  CommentRoutes.deleteComment);
+  CommentRoutes.deleteComment
+);
 
 // Add CommentRouter
 apiRouter.use(
@@ -138,6 +162,75 @@ apiRouter.use(
   expressjwt({ secret: process.env.JWT_SECRET ?? "", algorithms: ["HS256"] }),
   commentRouter
 );
+
+// ** Add PlaylistRouter ** //
+const playlistRouter = Router();
+
+// Get playlist by UUID
+playlistRouter.get(
+  Paths.Playlists.Get,
+  validate(["uuid", "string", "params"]),
+  PlaylistRoutes.getPlaylist
+);
+
+// Get playlists by user UUID
+playlistRouter.get(
+  Paths.Playlists.GetByUser,
+  validate(["uuid", "string", "params"]),
+  PlaylistRoutes.getUserPlaylists
+);
+
+// Create playlist
+playlistRouter.post(
+  Paths.Playlists.Create,
+  validate("title", [
+    "description",
+    (description) =>
+      typeof description === "string" || description === undefined,
+  ]),
+  PlaylistRoutes.createPlaylist
+);
+
+// Delete playlist
+playlistRouter.delete(
+  Paths.Playlists.Delete,
+  validate(["uuid", "string", "params"]),
+  PlaylistRoutes.deletePlaylist
+);
+
+// Add videos to playlist
+playlistRouter.post(
+  Paths.Playlists.Add,
+  validate(
+    ["uuid", "string", "params"],
+    [
+      "video_uuids",
+      (video_uuids) =>
+        Array.isArray(video_uuids) &&
+        video_uuids.every((video_uuid) => typeof video_uuid === "string"),
+    ],
+    "playlist_uuid"
+  ),
+  PlaylistRoutes.addVideosToPlaylist
+);
+
+// Remove videos from playlist
+playlistRouter.delete(
+  Paths.Playlists.Remove,
+  validate(
+    ["uuid", "string", "params"],
+    [
+      "video_uuids",
+      (video_uuids) =>
+        Array.isArray(video_uuids) &&
+        video_uuids.every((video_uuid) => typeof video_uuid === "string"),
+    ],
+    "playlist_uuid"
+  ),
+  PlaylistRoutes.removeVideosFromPlaylist
+);
+
+apiRouter.use(Paths.Playlists.Base, playlistRouter);
 
 // ** Add TagRouter ** //
 const tagRouter = Router();

@@ -31,6 +31,15 @@ const Paths = {
     Update: "/:uuid/update",
     Delete: "/:uuid/delete",
   },
+  Playlists: {
+    Base: "/playlists",
+    Get: "/:uuid",
+    Delete: "/:uuid",
+    Add: "/:uuid/add",
+    Remove: "/:uuid/remove",
+    GetByUser: "/user/:uuid",
+    Create: "/create",
+  },
   Tags: {
     Base: "/tags",
   },

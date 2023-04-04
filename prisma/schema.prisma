@@ -52,6 +52,8 @@ model likedVideos {
 
 model playlist {
   uuid            String           @id @db.Char(36)
+  name            String           @db.Char(36)
+  description     String?           @db.Char(72)
   user_uuid       String           @db.Char(36)
   users           users            @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "playlist_ibfk_1")
   playlist_videos playlistVideos[]
