@@ -6,6 +6,12 @@ interface ICreatePlaylist {
   title: string;
   description?: string;
 }
+
+interface IUpdatePlaylist {
+  title?: string;
+  description?: string;
+}
+
 interface IAddRemoveVideos {
   video_uuids: string[];
   playlist_uuid: string;
@@ -41,6 +47,22 @@ const createPlaylist = async (req: IReq<ICreatePlaylist>, res: IRes) => {
   return res.json(playlist);
 };
 
+const editPlaylist = async (req: IReq<IUpdatePlaylist>, res: IRes) => {
+  const { title, description } = req.body;
+  const { uuid } = req.params;
+
+  const jwt = await SessionUtil.getJwtPayload(req);
+
+  const playlist = await PlaylistService.editPlaylist(
+    uuid,
+    jwt.uuid,
+    title,
+    description
+  );
+
+  return res.json(playlist);
+};
+
 const deletePlaylist = async (req: IReq, res: IRes) => {
   const { uuid } = req.params;
 
@@ -52,7 +74,8 @@ const deletePlaylist = async (req: IReq, res: IRes) => {
 };
 
 const addVideosToPlaylist = async (req: IReq<IAddRemoveVideos>, res: IRes) => {
-  const { video_uuids, playlist_uuid } = req.body;
+  const { video_uuids } = req.body;
+  const { playlist_uuid } = req.params;
 
   const jwt = await SessionUtil.getJwtPayload(req);
 
@@ -69,7 +92,8 @@ const removeVideosFromPlaylist = async (
   req: IReq<IAddRemoveVideos>,
   res: IRes
 ) => {
-  const { video_uuids, playlist_uuid } = req.body;
+  const { video_uuids } = req.body;
+  const { playlist_uuid } = req.params;
 
   const jwt = await SessionUtil.getJwtPayload(req);
 
@@ -86,6 +110,7 @@ export default {
   getPlaylist,
   getUserPlaylists,
   createPlaylist,
+  editPlaylist,
   deletePlaylist,
   addVideosToPlaylist,
   removeVideosFromPlaylist,

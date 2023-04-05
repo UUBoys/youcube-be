@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Swagger Youcube",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "title": "Youcube",
     "contact": {
       "name": "UUBoys"
@@ -26,6 +26,10 @@
       "description": "/comment"
     },
     {
+      "name": "Playlists",
+      "description": "/playlists"
+    },
+    {
       "name": "Tags",
       "description": "/tags"
     }
@@ -44,26 +48,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "name",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "description": "User email"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Name of user"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "User password"
-                  }
-                }
+                "$ref": "#/components/schemas/UserRegister"
               }
             }
           }
@@ -115,21 +100,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "description": "User email"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "User password"
-                  }
-                }
+                "$ref": "#/components/schemas/UserLogin"
               }
             }
           }
@@ -207,30 +178,7 @@
                     "videos": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "uuid": {
-                            "type": "string"
-                          },
-                          "user_uuid": {
-                            "type": "string"
-                          },
-                          "title": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "monetized": {
-                            "type": "boolean"
-                          },
-                          "created": {
-                            "type": "string"
-                          },
-                          "tag": {
-                            "type": "integer"
-                          }
-                        }
+                        "$ref": "#/components/schemas/Video"
                       }
                     }
                   }
@@ -260,22 +208,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "minProperties": 1,
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "description": "User email"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Name of user"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "User password"
-                  }
-                }
+                "$ref": "#/components/schemas/UserUpdate"
               }
             }
           }
@@ -463,26 +396,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "minProperties": 1,
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "description": "Title of the video"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "Description of the video"
-                  },
-                  "monetized": {
-                    "type": "boolean",
-                    "description": "True if the video is monetized"
-                  },
-                  "tag": {
-                    "type": "integer",
-                    "description": "ID of the specified tag"
-                  }
-                }
+                "$ref": "#/components/schemas/VideoUpdate"
               }
             }
           }
@@ -581,31 +495,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "title",
-                  "description",
-                  "monetized",
-                  "tag"
-                ],
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "description": "Title of the video"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "Description of the video"
-                  },
-                  "monetized": {
-                    "type": "boolean",
-                    "description": "True if the video is monetized"
-                  },
-                  "tag": {
-                    "type": "integer",
-                    "description": "ID of the specified tag"
-                  }
-                }
+                "$ref": "#/components/schemas/VideoCreate"
               }
             }
           }
@@ -753,25 +643,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "video_uuid",
-                  "messsage"
-                ],
-                "properties": {
-                  "parent_uuid": {
-                    "type": "string",
-                    "description": "UUID of parent comment"
-                  },
-                  "video_uuid": {
-                    "type": "string",
-                    "description": "UUID of video to append the comment on"
-                  },
-                  "message": {
-                    "type": "string",
-                    "description": "Comment itself"
-                  }
-                }
+                "$ref": "#/components/schemas/CommentCreate"
               }
             }
           }
@@ -838,16 +710,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "message"
-                ],
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "Comment itself"
-                  }
-                }
+                "$ref": "#/components/schemas/CommentUpdate"
               }
             }
           }
@@ -880,7 +743,7 @@
         }
       }
     },
-    "/comment{uuid}/delete": {
+    "/comment/{uuid}/delete": {
       "delete": {
         "summary": "Delete comment",
         "tags": [
@@ -908,6 +771,287 @@
           },
           "404": {
             "description": "No comment found or no permission to delete"
+          }
+        }
+      }
+    },
+    "/playlists/create": {
+      "post": {
+        "summary": "Create a playlist",
+        "tags": [
+          "Playlists"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlaylist"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Playlist has been edited, returns updated playlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Playlist"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Playlist has not been found or user is not authorized to edit"
+          }
+        }
+      }
+    },
+    "/playlists/user/{uuid}": {
+      "get": {
+        "summary": "Get playlist by USER-UUID",
+        "tags": [
+          "Playlists"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of a user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a playlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Playlist"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Playlist has not been found"
+          }
+        }
+      }
+    },
+    "/playlists/{uuid}": {
+      "get": {
+        "summary": "Get playlist by UUID",
+        "tags": [
+          "Playlists"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of playlist"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a playlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Playlist"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Playlist has not been found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Edit a playlist",
+        "tags": [
+          "Playlists"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of playlist"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPlaylist"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Playlist has been edited, returns updated playlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Playlist"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Playlist has not been found or user is not authorized to edit"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a playlist",
+        "tags": [
+          "Playlists"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of playlist"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Playlist has been deleted"
+          },
+          "404": {
+            "description": "Playlist has not been found or user is not authorized to edit"
+          }
+        }
+      }
+    },
+    "/playlists/{uuid}/add": {
+      "post": {
+        "summary": "Add videos to playlist",
+        "tags": [
+          "Playlists"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of playlist"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddVideoToPlaylist"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Video has been added to playlist, returns updated playlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Playlist"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Playlist/Video has not been found or user is not authorized to edit"
+          }
+        }
+      }
+    },
+    "/playlists/{uuid}/remove": {
+      "post": {
+        "summary": "Remove videos to playlist",
+        "tags": [
+          "Playlists"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of playlist"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddVideoToPlaylist"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Video has been removed from playlist, returns updated playlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Playlist"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Playlist/Video has not been found or user is not authorized to edit"
           }
         }
       }
@@ -1078,6 +1222,74 @@
           "message": {
             "type": "string",
             "description": "Comment itself"
+          }
+        }
+      },
+      "Playlist": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "Playlist UUID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the playlist"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the playlist"
+          },
+          "playlist_videos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Video"
+            }
+          }
+        }
+      },
+      "EditPlaylist": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of playlist"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of playlist"
+          }
+        }
+      },
+      "CreatePlaylist": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of playlist"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of playlist"
+          }
+        }
+      },
+      "AddVideoToPlaylist": {
+        "type": "object",
+        "required": [
+          "video_uuids",
+          "playlist_uuid"
+        ],
+        "properties": {
+          "video_uuids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

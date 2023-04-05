@@ -197,6 +197,17 @@ playlistRouter.post(
   PlaylistRoutes.createPlaylist
 );
 
+// Update playlist
+playlistRouter.post(
+  Paths.Playlists.Edit,
+  validate(
+    ["uuid", "string", "params"],
+    ["title", (title) => typeof title === "string" || title === undefined],
+    ["description", (description) => typeof description === "string" || description === undefined]
+  ),
+  PlaylistRoutes.editPlaylist
+);
+
 // Delete playlist
 playlistRouter.delete(
   Paths.Playlists.Delete,
@@ -215,7 +226,7 @@ playlistRouter.post(
         Array.isArray(video_uuids) &&
         video_uuids.every((video_uuid) => typeof video_uuid === "string"),
     ],
-    "playlist_uuid"
+    ["playlist_uuid", "string", "params"]
   ),
   PlaylistRoutes.addVideosToPlaylist
 );
@@ -231,12 +242,24 @@ playlistRouter.delete(
         Array.isArray(video_uuids) &&
         video_uuids.every((video_uuid) => typeof video_uuid === "string"),
     ],
-    "playlist_uuid"
+    ["playlist_uuid", "string", "params"]
   ),
   PlaylistRoutes.removeVideosFromPlaylist
 );
 
-apiRouter.use(Paths.Playlists.Base, playlistRouter);
+const excludedPlaylistPaths = [
+  pathToRegexp(getFullPaths.Playlists.Get),
+  pathToRegexp(getFullPaths.Playlists.GetByUser),
+  pathToRegexp(getFullPaths.Playlists.Add),
+  pathToRegexp(getFullPaths.Playlists.Remove),
+]
+
+apiRouter.use(Paths.Playlists.Base, 
+  expressjwt({
+    secret: process.env.JWT_SECRET ?? "",
+    algorithms: ["HS256"],
+  }).unless({ path: excludedPlaylistPaths }),
+  playlistRouter);
 
 // ** Add TagRouter ** //
 const tagRouter = Router();

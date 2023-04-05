@@ -34,6 +34,7 @@ const Paths = {
   Playlists: {
     Base: "/playlists",
     Get: "/:uuid",
+    Edit: "/:uuid",
     Delete: "/:uuid",
     Add: "/:uuid/add",
     Remove: "/:uuid/remove",

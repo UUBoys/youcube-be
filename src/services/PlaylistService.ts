@@ -32,11 +32,48 @@ const createPlaylist = async (
   return playlist;
 };
 
+const editPlaylist = async (
+  playlist_uuid: string,
+  user_uuid: string,
+  title?: string,
+  description?: string
+) => {
+  const playlist = await prisma.playlist.updateMany({
+    where: {
+      uuid: playlist_uuid,
+      user_uuid: user_uuid,
+    },
+    data: {
+      name: title,
+      description: description,
+    },
+  });
+
+  if (playlist.count === 0) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Playlist not found or not authorized to edit");
+
+  return await prisma.playlist.findFirst({
+    where: {
+      uuid: playlist_uuid,
+    },
+    select: {
+      uuid: true,
+      name: true,
+      description: true,
+      playlist_videos: true
+    }});
+}
+
 const getPlaylist = async (uuid: string) => {
   const playlist = await prisma.playlist.findFirst({
     where: {
       uuid: uuid,
     },
+    select: {
+      uuid: true,
+      name: true,
+      description: true,
+      playlist_videos: true
+    }
   });
 
   if (!playlist)
@@ -50,6 +87,12 @@ const getUserPlaylists = async (user_uuid: string) => {
     where: {
       user_uuid: user_uuid,
     },
+    select: {
+      uuid: true,
+      name: true,
+      description: true,
+      playlist_videos: true
+    }
   });
 
   if (playlists.length === 0)
@@ -129,6 +172,12 @@ const addVideosToPlaylist = async (
     where: {
       uuid: playlist_uuid,
     },
+    select: {
+      uuid: true,
+      name: true,
+      description: true,
+      playlist_videos: true
+    }
   });
 };
 
@@ -171,6 +220,7 @@ const removeVideosFromPlaylist = async (
 
 export default {
   createPlaylist,
+  editPlaylist,
   getPlaylist,
   getUserPlaylists,
   deletePlaylist,
