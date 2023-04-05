@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Swagger Youcube",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "title": "Youcube",
     "contact": {
       "name": "UUBoys"
@@ -1319,6 +1319,7 @@
         "required": [
           "title",
           "description",
+          "url",
           "monetized",
           "tag"
         ],
@@ -1330,6 +1331,10 @@
           "description": {
             "type": "string",
             "description": "Description of the video"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the video"
           },
           "monetized": {
             "type": "boolean",
@@ -1352,6 +1357,10 @@
           "description": {
             "type": "string",
             "description": "Description of the video"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the video"
           },
           "monetized": {
             "type": "boolean",

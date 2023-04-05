@@ -100,10 +100,10 @@ videoRouter.post(
   Paths.Videos.Update,
   validate(
     ["uuid", "string", "params"],
-    "title",
-    "description",
-    ["monetized", "boolean"],
-    ["tag", "number"]
+    ["title", (title) => title === undefined || typeof title === "string"],
+    ["description", (description) => description === undefined || typeof description === "string"],
+    ["monetized", (monetized) => monetized === undefined || typeof monetized === "boolean"],
+    ["tag", (tag) => tag === undefined || typeof tag === "number"]
   ),
   VideoRoutes.updateVideo
 );

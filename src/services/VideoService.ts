@@ -96,7 +96,8 @@ const updateVideo = async (
   title?: string,
   description?: string,
   monetized?: boolean,
-  tag?: number
+  tag?: number,
+  url?: string
 ) => {
   const editQuery = await prisma.videos.updateMany({
     where: {
@@ -108,6 +109,7 @@ const updateVideo = async (
       description: description,
       monetized: monetized,
       tag: tag,
+      url: url,
     },
   });
 

@@ -19,6 +19,7 @@ interface IUpdateVideoReq {
   title?: string;
   description?: string;
   monetized?: boolean;
+  url?: string;
   tag?: number;
 }
 
@@ -58,7 +59,7 @@ const createVideo = async (req: IReq<ICreateVideoReq>, res: IRes) => {
 
 const updateVideo = async (req: IReq<IUpdateVideoReq>, res: IRes) => {
   const { uuid } = req.params;
-  const { title, description, monetized, tag } = req.body;
+  const { title, description, monetized, tag, url } = req.body;
 
   if (!title && !description && !monetized && !tag)
     throw new RouteError(HttpStatusCodes.BAD_REQUEST, "No data to update");
@@ -71,7 +72,8 @@ const updateVideo = async (req: IReq<IUpdateVideoReq>, res: IRes) => {
     title,
     description,
     monetized,
-    tag
+    tag,
+    url
   );
 
   return res.json(video);
