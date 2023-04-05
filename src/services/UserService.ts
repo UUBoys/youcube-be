@@ -19,6 +19,7 @@ const getUser = async (uuid: string) => {
       name: true,
       email: true,
       videos: true,
+      playlist: true
     },
   });
 

@@ -36,6 +36,7 @@ const getVideo = async (uuid: string) => {
       uuid: true,
       title: true,
       description: true,
+      url: true,
       monetized: true,
       created: true,
       users: {

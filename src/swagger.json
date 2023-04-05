@@ -180,6 +180,12 @@
                       "items": {
                         "$ref": "#/components/schemas/Video"
                       }
+                    },
+                    "playlist": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Playlist"
+                      }
                     }
                   }
                 }
@@ -274,6 +280,9 @@
                       "title": {
                         "type": "string"
                       },
+                      "url": {
+                        "type": "string"
+                      },
                       "description": {
                         "type": "string"
                       },
@@ -335,6 +344,9 @@
                       "type": "string"
                     },
                     "title": {
+                      "type": "string"
+                    },
+                    "url": {
                       "type": "string"
                     },
                     "description": {
@@ -413,6 +425,9 @@
                       "type": "string"
                     },
                     "title": {
+                      "type": "string"
+                    },
+                    "url": {
                       "type": "string"
                     },
                     "description": {
@@ -515,6 +530,9 @@
                       "type": "string"
                     },
                     "title": {
+                      "type": "string"
+                    },
+                    "url": {
                       "type": "string"
                     },
                     "description": {
@@ -1116,6 +1134,9 @@
             "type": "string"
           },
           "user_uuid": {
+            "type": "string"
+          },
+          "url": {
             "type": "string"
           },
           "title": {
