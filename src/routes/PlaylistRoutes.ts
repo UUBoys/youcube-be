@@ -18,9 +18,9 @@ interface IAddRemoveVideos {
 }
 
 const getPlaylist = async (req: IReq, res: IRes) => {
-  const { playlist_uuid } = req.params;
+  const { uuid } = req.params;
 
-  const playlist = await PlaylistService.getPlaylist(playlist_uuid);
+  const playlist = await PlaylistService.getPlaylist(uuid);
 
   return res.json(playlist);
 };
@@ -75,13 +75,13 @@ const deletePlaylist = async (req: IReq, res: IRes) => {
 
 const addVideosToPlaylist = async (req: IReq<IAddRemoveVideos>, res: IRes) => {
   const { video_uuids } = req.body;
-  const { playlist_uuid } = req.params;
+  const { uuid } = req.params;
 
   const jwt = await SessionUtil.getJwtPayload(req);
 
   const playlistUpdated = await PlaylistService.addVideosToPlaylist(
     video_uuids,
-    playlist_uuid,
+    uuid,
     jwt.uuid
   );
 
@@ -93,13 +93,13 @@ const removeVideosFromPlaylist = async (
   res: IRes
 ) => {
   const { video_uuids } = req.body;
-  const { playlist_uuid } = req.params;
+  const { uuid } = req.params;
 
   const jwt = await SessionUtil.getJwtPayload(req);
 
   const playlistUpdated = await PlaylistService.removeVideosFromPlaylist(
     video_uuids,
-    playlist_uuid,
+    uuid,
     jwt.uuid
   );
 
