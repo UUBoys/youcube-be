@@ -36,20 +36,14 @@
         "summary": "Register a new user",
         "description": "Tato cesta registruje nové uživatele\n",
         "operationId": "authregister",
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "name",
-                  "password"
-                ],
+                "required": ["email", "name", "password"],
                 "properties": {
                   "email": {
                     "type": "string",
@@ -107,19 +101,14 @@
     "/auth/login": {
       "post": {
         "summary": "Login user",
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
+                "required": ["email", "password"],
                 "properties": {
                   "email": {
                     "type": "string",
@@ -173,9 +162,7 @@
     "/users/{uuid}": {
       "get": {
         "summary": "Get user by UUID",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "in": "path",
@@ -247,9 +234,7 @@
     "/users/update": {
       "post": {
         "summary": "Update logged in user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "BearerAuth": []
@@ -319,12 +304,50 @@
         }
       }
     },
+    "/users/delete/{uuid}": {
+      "delete": {
+        "summary": "Delete user by UUID",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "name": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user found"
+          }
+        }
+      }
+    },
+
     "/videos": {
       "get": {
         "summary": "Get all videos",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "responses": {
           "200": {
             "description": "Returns videos",
@@ -376,9 +399,7 @@
     "/videos/{uuid}": {
       "get": {
         "summary": "Get video by UUID",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "parameters": [
           {
             "in": "path",
@@ -444,9 +465,7 @@
             "BearerAuth": []
           }
         ],
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "parameters": [
           {
             "in": "path",
@@ -536,9 +555,7 @@
       },
       "delete": {
         "summary": "Delete video by UUID",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "security": [
           {
             "BearerAuth": []
@@ -568,9 +585,7 @@
     "/videos/create": {
       "post": {
         "summary": "Create a video",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "security": [
           {
             "BearerAuth": []
@@ -582,12 +597,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "title",
-                  "description",
-                  "monetized",
-                  "tag"
-                ],
+                "required": ["title", "description", "monetized", "tag"],
                 "properties": {
                   "title": {
                     "type": "string",
@@ -650,9 +660,7 @@
     "/videos/{uuid}/comments": {
       "get": {
         "summary": "Get video comments",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "parameters": [
           {
             "in": "path",
@@ -740,9 +748,7 @@
     "/comment/create": {
       "post": {
         "summary": "Create comment",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "security": [
           {
             "BearerAuth": []
@@ -754,10 +760,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "video_uuid",
-                  "messsage"
-                ],
+                "required": ["video_uuid", "messsage"],
                 "properties": {
                   "parent_uuid": {
                     "type": "string",
@@ -814,9 +817,7 @@
     "/comment/{uuid}/update": {
       "post": {
         "summary": "Update Comment",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "security": [
           {
             "BearerAuth": []
@@ -839,9 +840,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "message"
-                ],
+                "required": ["message"],
                 "properties": {
                   "message": {
                     "type": "string",
@@ -883,9 +882,7 @@
     "/comment{uuid}/delete": {
       "delete": {
         "summary": "Delete comment",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "security": [
           {
             "BearerAuth": []
@@ -915,9 +912,7 @@
     "/tags": {
       "get": {
         "summary": "Get all tags",
-        "tags": [
-          "Tags"
-        ],
+        "tags": ["Tags"],
         "responses": {
           "200": {
             "description": "Returns all tags",
@@ -993,11 +988,7 @@
       },
       "UserRegister": {
         "type": "object",
-        "required": [
-          "email",
-          "name",
-          "password"
-        ],
+        "required": ["email", "name", "password"],
         "properties": {
           "email": {
             "type": "string",
@@ -1015,10 +1006,7 @@
       },
       "UserLogin": {
         "type": "object",
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
@@ -1050,10 +1038,7 @@
       },
       "CommentCreate": {
         "type": "object",
-        "required": [
-          "video_uuid",
-          "messsage"
-        ],
+        "required": ["video_uuid", "messsage"],
         "properties": {
           "parent_uuid": {
             "type": "string",
@@ -1071,9 +1056,7 @@
       },
       "CommentUpdate": {
         "type": "object",
-        "required": [
-          "message"
-        ],
+        "required": ["message"],
         "properties": {
           "message": {
             "type": "string",
@@ -1083,12 +1066,7 @@
       },
       "VideoCreate": {
         "type": "object",
-        "required": [
-          "title",
-          "description",
-          "monetized",
-          "tag"
-        ],
+        "required": ["title", "description", "monetized", "tag"],
         "properties": {
           "title": {
             "type": "string",
