@@ -75,6 +75,13 @@ const videoRouter = Router();
 // Get all videos
 videoRouter.get("", VideoRoutes.getVideos);
 
+// Get videos by user UUID
+videoRouter.get(
+  Paths.Videos.GetByUser,
+  validate(["uuid", "string", "params"]),
+  VideoRoutes.getVideosByUserUUID
+);
+
 // Get video by id
 videoRouter.get(
   Paths.Videos.Get,
@@ -101,8 +108,15 @@ videoRouter.post(
   validate(
     ["uuid", "string", "params"],
     ["title", (title) => title === undefined || typeof title === "string"],
-    ["description", (description) => description === undefined || typeof description === "string"],
-    ["monetized", (monetized) => monetized === undefined || typeof monetized === "boolean"],
+    [
+      "description",
+      (description) =>
+        description === undefined || typeof description === "string",
+    ],
+    [
+      "monetized",
+      (monetized) => monetized === undefined || typeof monetized === "boolean",
+    ],
     ["tag", (tag) => tag === undefined || typeof tag === "number"]
   ),
   VideoRoutes.updateVideo
@@ -126,6 +140,7 @@ const excludedVideoPaths = [
   pathToRegexp(getFullPaths.Videos.Get),
   pathToRegexp(getFullPaths.Videos.Comments),
   pathToRegexp(getFullPaths.Videos.Base),
+  pathToRegexp(getFullPaths.Videos.GetByUser),
 ];
 
 // Add VideoRouter
@@ -203,7 +218,11 @@ playlistRouter.post(
   validate(
     ["uuid", "string", "params"],
     ["title", (title) => typeof title === "string" || title === undefined],
-    ["description", (description) => typeof description === "string" || description === undefined]
+    [
+      "description",
+      (description) =>
+        typeof description === "string" || description === undefined,
+    ]
   ),
   PlaylistRoutes.editPlaylist
 );
@@ -225,14 +244,13 @@ playlistRouter.post(
       (video_uuids) =>
         Array.isArray(video_uuids) &&
         video_uuids.every((video_uuid) => typeof video_uuid === "string"),
-    ],
-    ["playlist_uuid", "string", "params"]
+    ]
   ),
   PlaylistRoutes.addVideosToPlaylist
 );
 
 // Remove videos from playlist
-playlistRouter.delete(
+playlistRouter.post(
   Paths.Playlists.Remove,
   validate(
     ["uuid", "string", "params"],
@@ -241,8 +259,7 @@ playlistRouter.delete(
       (video_uuids) =>
         Array.isArray(video_uuids) &&
         video_uuids.every((video_uuid) => typeof video_uuid === "string"),
-    ],
-    ["playlist_uuid", "string", "params"]
+    ]
   ),
   PlaylistRoutes.removeVideosFromPlaylist
 );
@@ -252,14 +269,16 @@ const excludedPlaylistPaths = [
   pathToRegexp(getFullPaths.Playlists.GetByUser),
   pathToRegexp(getFullPaths.Playlists.Add),
   pathToRegexp(getFullPaths.Playlists.Remove),
-]
+];
 
-apiRouter.use(Paths.Playlists.Base, 
+apiRouter.use(
+  Paths.Playlists.Base,
   expressjwt({
     secret: process.env.JWT_SECRET ?? "",
     algorithms: ["HS256"],
   }).unless({ path: excludedPlaylistPaths }),
-  playlistRouter);
+  playlistRouter
+);
 
 // ** Add TagRouter ** //
 const tagRouter = Router();

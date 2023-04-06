@@ -27,6 +27,31 @@ const getVideos = async () => {
   return videos;
 };
 
+const getVideosByUserUUID = async (uuid: string) => {
+  const videos = await prisma.videos.findMany({
+    where: {
+      user_uuid: uuid,
+    },
+    select: {
+      uuid: true,
+      title: true,
+      description: true,
+      url: true,
+      monetized: true,
+      created: true,
+      tag: true,
+      users: {
+        select: {
+          uuid: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return videos;
+};
+
 const getVideo = async (uuid: string) => {
   const video = await prisma.videos.findFirst({
     where: {
@@ -150,6 +175,7 @@ const deleteVideo = async (video_uuid: string, user_uuid: string) => {
 export default {
   getVideos,
   getVideo,
+  getVideosByUserUUID,
   createVideo,
   updateVideo,
   deleteVideo,

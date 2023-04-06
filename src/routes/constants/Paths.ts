@@ -20,6 +20,7 @@ const Paths = {
   Videos: {
     Base: "/videos",
     Get: "/:uuid",
+    GetByUser: "/user/:uuid",
     Create: "/create",
     Update: "/:uuid",
     Delete: "/:uuid/delete",

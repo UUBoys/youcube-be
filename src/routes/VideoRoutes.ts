@@ -40,6 +40,14 @@ const getVideos = async (req: IReq, res: IRes) => {
   return res.json(videos);
 };
 
+const getVideosByUserUUID = async (req: IReq, res: IRes) => {
+  const { uuid } = req.params;
+
+  const videos = await VideoService.getVideosByUserUUID(uuid);
+
+  return res.json(videos);
+};
+
 const createVideo = async (req: IReq<ICreateVideoReq>, res: IRes) => {
   const { title, description, monetized, tag, url } = req.body;
 
@@ -106,4 +114,5 @@ export default {
   updateVideo,
   deleteVideo,
   getVideoComments,
+  getVideosByUserUUID,
 } as const;

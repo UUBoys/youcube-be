@@ -49,7 +49,11 @@ const editPlaylist = async (
     },
   });
 
-  if (playlist.count === 0) throw new RouteError(HttpStatusCodes.NOT_FOUND, "Playlist not found or not authorized to edit");
+  if (playlist.count === 0)
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Playlist not found or not authorized to edit"
+    );
 
   return await prisma.playlist.findFirst({
     where: {
@@ -59,9 +63,10 @@ const editPlaylist = async (
       uuid: true,
       name: true,
       description: true,
-      playlist_videos: true
-    }});
-}
+      playlist_videos: true,
+    },
+  });
+};
 
 const getPlaylist = async (uuid: string) => {
   const playlist = await prisma.playlist.findFirst({
@@ -72,8 +77,8 @@ const getPlaylist = async (uuid: string) => {
       uuid: true,
       name: true,
       description: true,
-      playlist_videos: true
-    }
+      playlist_videos: true,
+    },
   });
 
   if (!playlist)
@@ -91,8 +96,8 @@ const getUserPlaylists = async (user_uuid: string) => {
       uuid: true,
       name: true,
       description: true,
-      playlist_videos: true
-    }
+      playlist_videos: true,
+    },
   });
 
   if (playlists.length === 0)
@@ -139,11 +144,11 @@ const addVideosToPlaylist = async (
     })
     .then((videos) => videos.map((video) => video.uuid));
 
-  video_uuids = video_uuids.filter((video_uuid) => {
+  let missing_videos = video_uuids.filter((video_uuid) => {
     return !foundVideos.includes(video_uuid);
   });
 
-  if (video_uuids.length > 0) throw new PlaylistVideosNotFound(video_uuids);
+  if (missing_videos.length > 0) throw new PlaylistVideosNotFound(video_uuids);
 
   try {
     await prisma.playlist.findFirstOrThrow({
@@ -160,7 +165,7 @@ const addVideosToPlaylist = async (
   }
 
   await prisma.playlistVideos.createMany({
-    data: video_uuids.map((video_uuid) => {
+    data: foundVideos.map((video_uuid) => {
       return {
         playlist_uuid: playlist_uuid,
         video_uuid: video_uuid,
@@ -176,8 +181,8 @@ const addVideosToPlaylist = async (
       uuid: true,
       name: true,
       description: true,
-      playlist_videos: true
-    }
+      playlist_videos: true,
+    },
   });
 };
 
@@ -216,6 +221,18 @@ const removeVideosFromPlaylist = async (
       HttpStatusCodes.NOT_FOUND,
       "No videos found to remove"
     );
+
+  return prisma.playlist.findFirst({
+    where: {
+      uuid: playlist_uuid,
+    },
+    select: {
+      uuid: true,
+      name: true,
+      description: true,
+      playlist_videos: true,
+    },
+  });
 };
 
 export default {
