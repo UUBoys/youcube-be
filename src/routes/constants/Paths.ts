@@ -23,7 +23,7 @@ const Paths = {
     GetByUser: "/user/:uuid",
     Create: "/create",
     Update: "/:uuid",
-    Delete: "/:uuid/delete",
+    Delete: "/:uuid",
     Comments: "/:uuid/comments",
   },
   Comments: {
