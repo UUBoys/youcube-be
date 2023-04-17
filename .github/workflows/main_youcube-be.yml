@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: '18.x'
 
+      - name: Insert SQL connection string
+        run: |
+          echo ${{ secrets.PLANETSQL }} >> ./env/production.env
+
       - name: npm install, build
         run: |
           npm install
