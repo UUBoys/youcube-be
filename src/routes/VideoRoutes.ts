@@ -5,6 +5,7 @@ import { RouteError } from "@src/other/classes";
 
 import { IReq, IRes } from "./types/express/misc";
 import CommentService from "@src/services/CommentService";
+import { expressjwt } from "express-jwt";
 
 // **** Types **** //
 interface ICreateVideoReq {
@@ -26,7 +27,9 @@ interface IUpdateVideoReq {
 // **** Functions **** //
 const getVideoById = async (req: IReq, res: IRes) => {
   const { uuid } = req.params;
-  const video = await VideoService.getVideo(uuid);
+  let jwtPayload = await SessionUtil.getJwtPayload(req);
+
+  const video = await VideoService.getVideo(uuid, jwtPayload.uuid);
 
   if (!video)
     throw new RouteError(HttpStatusCodes.NOT_FOUND, "Video not found");

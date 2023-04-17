@@ -52,7 +52,7 @@ const getVideosByUserUUID = async (uuid: string) => {
   return videos;
 };
 
-const getVideo = async (uuid: string) => {
+const getVideo = async (uuid: string, userUUID?: string) => {
   const video = await prisma.videos.findFirst({
     where: {
       uuid: uuid,
@@ -83,8 +83,36 @@ const getVideo = async (uuid: string) => {
           },
         },
       },
+      videoView: {
+        select: {
+          uuid: true,
+          created: true,
+        },
+      },
     },
   });
+
+  if (video) {
+    if (userUUID) {
+      const videoView = await prisma.videoView.findFirst({
+        where: {
+          video_uuid: uuid,
+          user_uuid: userUUID,
+        },
+      });
+
+      if (!videoView) {
+        await prisma.videoView.create({
+          data: {
+            uuid: v4(),
+            created: new Date(),
+            video_uuid: uuid,
+            user_uuid: userUUID,
+          },
+        });
+      }
+    }
+  }
 
   return video;
 };

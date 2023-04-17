@@ -53,7 +53,7 @@ model likedVideos {
 model playlist {
   uuid            String           @id @db.Char(36)
   name            String           @db.Char(36)
-  description     String?           @db.Char(72)
+  description     String?          @db.Char(72)
   user_uuid       String           @db.Char(36)
   users           users            @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "playlist_ibfk_1")
   playlist_videos playlistVideos[]
@@ -102,6 +102,19 @@ model users {
   subscribers_subscribers_user_uuidTousers      subscribers[] @relation("subscribers_user_uuidTousers")
   subscribers_subscribers_subcriber_uuidTousers subscribers[] @relation("subscribers_subcriber_uuidTousers")
   videos                                        videos[]
+  videoView                                     videoView[]
+}
+
+model videoView {
+  uuid       String   @id @db.Char(36)
+  video_uuid String   @db.Char(36)
+  user_uuid  String   @db.Char(36)
+  created    DateTime @default(now()) @db.DateTime(0)
+  users      users    @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "video_view_ibfk_1")
+  videos     videos   @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "video_view_ibfk_2")
+
+  @@index([user_uuid], map: "user_uuid")
+  @@index([video_uuid], map: "video_uuid")
 }
 
 model videos {
@@ -119,6 +132,7 @@ model videos {
   playlist_videos playlistVideos[]
   users           users            @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_1")
   tags            tags             @relation(fields: [tag], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_2")
+  videoView       videoView[]
 
   @@index([tag], map: "tag")
   @@index([user_uuid], map: "user_uuid")
