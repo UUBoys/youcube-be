@@ -27,9 +27,14 @@ interface IUpdateVideoReq {
 // **** Functions **** //
 const getVideoById = async (req: IReq, res: IRes) => {
   const { uuid } = req.params;
-  let jwtPayload = await SessionUtil.getJwtPayload(req);
+  let jwtPayload = null;
 
-  const video = await VideoService.getVideo(uuid, jwtPayload.uuid);
+  try {
+    jwtPayload = await SessionUtil.getJwtPayload(req);
+  } catch (_) {}
+
+
+  const video = await VideoService.getVideo(uuid, jwtPayload?.uuid);
 
   if (!video)
     throw new RouteError(HttpStatusCodes.NOT_FOUND, "Video not found");
