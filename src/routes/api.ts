@@ -136,6 +136,13 @@ videoRouter.delete(
   VideoRoutes.deleteVideo
 );
 
+// Like video
+videoRouter.post(
+  Paths.Videos.Like,
+  validate(["uuid", "string", "params"]),
+  VideoRoutes.likeVideo
+);
+
 const excludedVideoPaths = [
   pathToRegexp(getFullPaths.Videos.Get),
   pathToRegexp(getFullPaths.Videos.Comments),

@@ -113,6 +113,19 @@ const getVideoComments = async (req: IReq, res: IRes) => {
   return res.json(comments);
 };
 
+const likeVideo = async (req: IReq, res: IRes) => {
+  const { uuid } = req.params;
+
+  let jwtPayload = await SessionUtil.getJwtPayload(req);
+
+  let like = await VideoService.likeSwitchVideo(uuid, jwtPayload.uuid);
+
+  return res.status(200).send({ 
+    message: like ? "Video liked" : "Video unliked",
+    like: like
+  });
+};
+
 // **** Export default **** //
 
 export default {
@@ -121,6 +134,7 @@ export default {
   createVideo,
   updateVideo,
   deleteVideo,
+  likeVideo,
   getVideoComments,
   getVideosByUserUUID,
 } as const;

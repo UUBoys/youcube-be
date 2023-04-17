@@ -25,6 +25,7 @@ const Paths = {
     Update: "/:uuid",
     Delete: "/:uuid",
     Comments: "/:uuid/comments",
+    Like: "/:uuid/like",
   },
   Comments: {
     Base: "/comment",
