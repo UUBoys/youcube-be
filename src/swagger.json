@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Swagger Youcube",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "title": "Youcube",
     "contact": {
       "name": "UUBoys"
@@ -40,7 +40,9 @@
         "summary": "Register a new user",
         "description": "Tato cesta registruje nové uživatele\n",
         "operationId": "authregister",
-        "tags": ["Authorization"],
+        "tags": [
+          "Authorization"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -90,7 +92,9 @@
     "/auth/login": {
       "post": {
         "summary": "Login user",
-        "tags": ["Authorization"],
+        "tags": [
+          "Authorization"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -140,7 +144,9 @@
     "/users/{uuid}": {
       "get": {
         "summary": "Get user by UUID",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -195,7 +201,9 @@
     "/users/update": {
       "post": {
         "summary": "Update logged in user",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -253,7 +261,9 @@
     "/videos": {
       "get": {
         "summary": "Get all videos",
-        "tags": ["Videos"],
+        "tags": [
+          "Videos"
+        ],
         "responses": {
           "200": {
             "description": "Returns videos",
@@ -305,61 +315,29 @@
         }
       }
     },
-    "/videos/user/{uuid}": {
+    "/videos/liked": {
       "get": {
-        "summary": "Get videos by USER-UUID",
-        "tags": ["Videos"],
-        "parameters": [
+        "summary": "Get liked videos",
+        "tags": [
+          "Videos"
+        ],
+        "security": [
           {
-            "in": "path",
-            "name": "uuid",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "UUID of user"
+            "BearerAuth": []
           }
         ],
         "responses": {
           "200": {
-            "description": "Returns videos by user UUID",
+            "description": "Returns UUIDs of liked videos",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "properties": {
-                      "uuid": {
+                      "video_uuid": {
                         "type": "string"
-                      },
-                      "title": {
-                        "type": "string"
-                      },
-                      "url": {
-                        "type": "string"
-                      },
-                      "description": {
-                        "type": "string"
-                      },
-                      "monetized": {
-                        "type": "boolean"
-                      },
-                      "created": {
-                        "type": "string"
-                      },
-                      "tag": {
-                        "type": "integer"
-                      },
-                      "users": {
-                        "type": "object",
-                        "properties": {
-                          "uuid": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          }
-                        }
                       }
                     }
                   }
@@ -373,7 +351,9 @@
     "/videos/{uuid}": {
       "get": {
         "summary": "Get video by UUID",
-        "tags": ["Videos"],
+        "tags": [
+          "Videos"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -442,7 +422,9 @@
             "BearerAuth": []
           }
         ],
-        "tags": ["Videos"],
+        "tags": [
+          "Videos"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -516,7 +498,9 @@
       },
       "delete": {
         "summary": "Delete video by UUID",
-        "tags": ["Videos"],
+        "tags": [
+          "Videos"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -543,10 +527,59 @@
         }
       }
     },
+    "/videos/{uuid}/like": {
+      "post": {
+        "summary": "Like video",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": [
+          "Videos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "UUID of video"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "like": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video has not been found"
+          }
+        }
+      }
+    },
     "/videos/create": {
       "post": {
         "summary": "Create a video",
-        "tags": ["Videos"],
+        "tags": [
+          "Videos"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -605,7 +638,9 @@
     "/videos/{uuid}/comments": {
       "get": {
         "summary": "Get video comments",
-        "tags": ["Videos"],
+        "tags": [
+          "Videos"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -693,7 +728,9 @@
     "/comment/create": {
       "post": {
         "summary": "Create comment",
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -747,7 +784,9 @@
     "/comment/{uuid}/update": {
       "post": {
         "summary": "Update Comment",
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -805,7 +844,9 @@
     "/comment/{uuid}/delete": {
       "delete": {
         "summary": "Delete comment",
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -835,7 +876,9 @@
     "/playlists/create": {
       "post": {
         "summary": "Create a playlist",
-        "tags": ["Playlists"],
+        "tags": [
+          "Playlists"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -871,7 +914,9 @@
     "/playlists/user/{uuid}": {
       "get": {
         "summary": "Get playlist by USER-UUID",
-        "tags": ["Playlists"],
+        "tags": [
+          "Playlists"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -903,7 +948,9 @@
     "/playlists/{uuid}": {
       "get": {
         "summary": "Get playlist by UUID",
-        "tags": ["Playlists"],
+        "tags": [
+          "Playlists"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -933,7 +980,9 @@
       },
       "post": {
         "summary": "Edit a playlist",
-        "tags": ["Playlists"],
+        "tags": [
+          "Playlists"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -978,7 +1027,9 @@
       },
       "delete": {
         "summary": "Delete a playlist",
-        "tags": ["Playlists"],
+        "tags": [
+          "Playlists"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -1008,7 +1059,9 @@
     "/playlists/{uuid}/add": {
       "post": {
         "summary": "Add videos to playlist",
-        "tags": ["Playlists"],
+        "tags": [
+          "Playlists"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -1055,7 +1108,9 @@
     "/playlists/{uuid}/remove": {
       "post": {
         "summary": "Remove videos to playlist",
-        "tags": ["Playlists"],
+        "tags": [
+          "Playlists"
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -1102,7 +1157,9 @@
     "/tags": {
       "get": {
         "summary": "Get all tags",
-        "tags": ["Tags"],
+        "tags": [
+          "Tags"
+        ],
         "responses": {
           "200": {
             "description": "Returns all tags",
@@ -1181,7 +1238,11 @@
       },
       "UserRegister": {
         "type": "object",
-        "required": ["email", "name", "password"],
+        "required": [
+          "email",
+          "name",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -1199,7 +1260,10 @@
       },
       "UserLogin": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -1231,7 +1295,10 @@
       },
       "CommentCreate": {
         "type": "object",
-        "required": ["video_uuid", "messsage"],
+        "required": [
+          "video_uuid",
+          "messsage"
+        ],
         "properties": {
           "parent_uuid": {
             "type": "string",
@@ -1249,7 +1316,9 @@
       },
       "CommentUpdate": {
         "type": "object",
-        "required": ["message"],
+        "required": [
+          "message"
+        ],
         "properties": {
           "message": {
             "type": "string",
@@ -1275,18 +1344,7 @@
           "playlist_videos": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number"
-                },
-                "playlist_uuid": {
-                  "type": "string"
-                },
-                "video_uuid": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/Video"
             }
           }
         }
@@ -1307,7 +1365,9 @@
       },
       "CreatePlaylist": {
         "type": "object",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "properties": {
           "title": {
             "type": "string",
@@ -1321,7 +1381,10 @@
       },
       "AddVideoToPlaylist": {
         "type": "object",
-        "required": ["video_uuids", "playlist_uuid"],
+        "required": [
+          "video_uuids",
+          "playlist_uuid"
+        ],
         "properties": {
           "video_uuids": {
             "type": "array",
@@ -1333,7 +1396,13 @@
       },
       "VideoCreate": {
         "type": "object",
-        "required": ["title", "description", "url", "monetized", "tag"],
+        "required": [
+          "title",
+          "description",
+          "url",
+          "monetized",
+          "tag"
+        ],
         "properties": {
           "title": {
             "type": "string",
