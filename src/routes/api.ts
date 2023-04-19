@@ -143,6 +143,9 @@ videoRouter.post(
   VideoRoutes.likeVideo
 );
 
+// Get liked video UUIDs
+videoRouter.get(Paths.Videos.Liked, VideoRoutes.likedVideos);
+
 const excludedVideoPaths = [
   pathToRegexp(getFullPaths.Videos.Get),
   pathToRegexp(getFullPaths.Videos.Comments),

@@ -249,6 +249,19 @@ const likeSwitchVideo = async (video_uuid: string, user_uuid: string) => {
   }
 }
 
+const getLikedVideos = async (user_uuid: string) => {
+  const likedVideos = await prisma.likedVideos.findMany({
+    where: {
+      user_uuid: user_uuid,
+    },
+    select: {
+      video_uuid: true,
+    },
+  });
+
+  return likedVideos;
+}
+
 // **** Export default **** //
 
 export default {
@@ -259,4 +272,5 @@ export default {
   updateVideo,
   deleteVideo,
   likeSwitchVideo,
+  getLikedVideos,
 } as const;
