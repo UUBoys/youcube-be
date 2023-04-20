@@ -5,7 +5,22 @@ import { RouteError } from "@src/other/classes";
 
 import { IReq, IRes } from "./types/express/misc";
 import CommentService from "@src/services/CommentService";
-import { expressjwt } from "express-jwt";
+
+const convertYoutubeurl = (url: string): string => {
+  if (url.match(/^https:\/\/www\.youtube\.com\/embed\/[a-zA-Z0-9_-]+$/)) {
+    return url;
+  } else {
+    const youtubeUrl = url.replace("watch?v=", "embed/");
+
+    if (
+      !youtubeUrl.match(/^https:\/\/www\.youtube\.com\/embed\/[a-zA-Z0-9_-]+$/)
+    ) {
+      throw new RouteError(HttpStatusCodes.BAD_REQUEST, "Invalid youtube url");
+    }
+
+    return youtubeUrl;
+  }
+};
 
 // **** Types **** //
 interface ICreateVideoReq {
@@ -32,7 +47,6 @@ const getVideoById = async (req: IReq, res: IRes) => {
   try {
     jwtPayload = await SessionUtil.getJwtPayload(req);
   } catch (_) {}
-
 
   const video = await VideoService.getVideo(uuid, jwtPayload?.uuid);
 
@@ -61,10 +75,12 @@ const createVideo = async (req: IReq<ICreateVideoReq>, res: IRes) => {
 
   let jwtPayload = await SessionUtil.getJwtPayload(req);
 
+  const embedUrl = convertYoutubeurl(url);
+
   const video = await VideoService.createVideo(
     title,
     description,
-    url,
+    embedUrl,
     monetized,
     tag,
     jwtPayload.uuid
@@ -75,10 +91,15 @@ const createVideo = async (req: IReq<ICreateVideoReq>, res: IRes) => {
 
 const updateVideo = async (req: IReq<IUpdateVideoReq>, res: IRes) => {
   const { uuid } = req.params;
-  const { title, description, monetized, tag, url } = req.body;
+  const { title, description, monetized, tag } = req.body;
+  let { url } = req.body;
 
-  if (!title && !description && !monetized && !tag)
+  if (!title && !description && !monetized && !tag && !url)
     throw new RouteError(HttpStatusCodes.BAD_REQUEST, "No data to update");
+
+  if (url) {
+    url = convertYoutubeurl(url);
+  }
 
   let jwtPayload = await SessionUtil.getJwtPayload(req);
 
@@ -120,9 +141,9 @@ const likeVideo = async (req: IReq, res: IRes) => {
 
   let like = await VideoService.likeSwitchVideo(uuid, jwtPayload.uuid);
 
-  return res.status(200).send({ 
+  return res.status(200).send({
     message: like ? "Video liked" : "Video unliked",
-    like: like
+    like: like,
   });
 };
 
