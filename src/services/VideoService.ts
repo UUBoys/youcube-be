@@ -24,8 +24,9 @@ const getVideos = async () => {
       _count: {
         select: {
           liked_videos: true,
+          videoView: true,
         },
-      }
+      },
     },
   });
 
@@ -54,8 +55,9 @@ const getVideosByUserUUID = async (uuid: string) => {
       _count: {
         select: {
           liked_videos: true,
+          videoView: true,
         },
-      }
+      },
     },
   });
 
@@ -102,8 +104,9 @@ const getVideo = async (uuid: string, userUUID?: string) => {
       _count: {
         select: {
           liked_videos: true,
+          videoView: true,
         },
-      }
+      },
     },
   });
 
@@ -219,10 +222,7 @@ const likeSwitchVideo = async (video_uuid: string, user_uuid: string) => {
   });
 
   if (!video)
-    throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      "Video not found"
-    );
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, "Video not found");
 
   const likeExists = await prisma.likedVideos.findFirst({
     where: {
@@ -247,7 +247,7 @@ const likeSwitchVideo = async (video_uuid: string, user_uuid: string) => {
     });
     return false;
   }
-}
+};
 
 const getLikedVideos = async (user_uuid: string) => {
   const likedVideos = await prisma.likedVideos.findMany({
@@ -260,7 +260,7 @@ const getLikedVideos = async (user_uuid: string) => {
   });
 
   return likedVideos;
-}
+};
 
 // **** Export default **** //
 
