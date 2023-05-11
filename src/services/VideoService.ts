@@ -95,12 +95,6 @@ const getVideo = async (uuid: string, userUUID?: string) => {
           },
         },
       },
-      videoView: {
-        select: {
-          uuid: true,
-          created: true,
-        },
-      },
       _count: {
         select: {
           liked_videos: true,
@@ -132,7 +126,14 @@ const getVideo = async (uuid: string, userUUID?: string) => {
     }
   }
 
-  return video;
+  const isLikedByUser = await prisma.likedVideos.findFirst({
+    where: {
+      user_uuid: userUUID,
+      video_uuid: video?.uuid,
+    },
+  });
+
+  return { video, isLikedByUser: isLikedByUser ? true : false };
 };
 
 const createVideo = async (
