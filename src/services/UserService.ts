@@ -19,11 +19,13 @@ const getUser = async (uuid: string) => {
       name: true,
       email: true,
       videos: true,
-      playlist: true
+      liked_videos: true,
+      videoView: true,
     },
   });
 
-  if (!user) throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR)
+  if (!user)
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
 
   return user;
 };
@@ -65,7 +67,12 @@ const createUser = async (email: string, password: string, name: string) => {
   return newUser;
 };
 
-const updateUser = async (uuid: string, name?: string, email?: string, password?: string) => {
+const updateUser = async (
+  uuid: string,
+  name?: string,
+  email?: string,
+  password?: string
+) => {
   // Salt and hash the password
   const hashedPassword = password ? await PwdUtil.getHash(password) : undefined;
 
@@ -86,7 +93,8 @@ const updateUser = async (uuid: string, name?: string, email?: string, password?
     },
   });
 
-  if (!updatedUser) throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
+  if (!updatedUser)
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
 
   return updatedUser;
 };
