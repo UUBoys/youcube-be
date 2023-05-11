@@ -200,18 +200,23 @@ const updateVideo = async (
 };
 
 const deleteVideo = async (video_uuid: string, user_uuid: string) => {
-  const deleteQuery = await prisma.videos.deleteMany({
+  const video = await prisma.videos.findFirst({
     where: {
       uuid: video_uuid,
-      user_uuid: user_uuid,
     },
   });
 
-  if (deleteQuery.count === 0)
+  if (!video || video.user_uuid !== user_uuid)
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       "Video not found or not authorized to delete this video"
     );
+
+  const deleteQuery = await prisma.videos.delete({
+    where: {
+      uuid: video_uuid,
+    },
+  });
 
   return deleteQuery;
 };
