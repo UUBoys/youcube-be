@@ -87,6 +87,7 @@ const getVideo = async (uuid: string, userUUID?: string) => {
           uuid: true,
           created: true,
           message: true,
+          parent_uuid: true,
           users: {
             select: {
               uuid: true,
