@@ -28,6 +28,9 @@ const getVideos = async () => {
         },
       },
     },
+    orderBy: {
+      created: "desc",
+    },
   });
 
   return videos;
