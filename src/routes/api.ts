@@ -21,7 +21,11 @@ const apiRouter = Router(),
 const userRouter = Router();
 
 // Get user
-userRouter.get(Paths.Users.Get, validate("uuid"), UserRoutes.getUser);
+userRouter.get(
+  Paths.Users.Get,
+  validate(["uuid", "string", "params"]),
+  UserRoutes.getUser
+);
 
 // Update user
 userRouter.post(
