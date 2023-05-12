@@ -216,6 +216,11 @@ const deleteVideo = async (video_uuid: string, user_uuid: string) => {
     where: {
       uuid: video_uuid,
     },
+    include: {
+      comments: true,
+      videoView: true,
+      liked_videos: true,
+    },
   });
 
   return deleteQuery;

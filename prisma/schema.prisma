@@ -18,8 +18,8 @@ model comments {
   created        DateTime   @default(now()) @db.DateTime(0)
   comments       comments?  @relation("commentsTocomments", fields: [parent_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "comments_ibfk_1")
   other_comments comments[] @relation("commentsTocomments")
-  users          users      @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "comments_ibfk_2")
-  videos         videos     @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "comments_ibfk_3")
+  users          users      @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: NoAction, map: "comments_ibfk_2")
+  videos         videos     @relation(fields: [video_uuid], references: [uuid], onDelete: Cascade, onUpdate: NoAction, map: "comments_ibfk_3")
 
   @@index([parent_uuid], map: "parent_uuid")
   @@index([user_uuid], map: "user_uuid")
@@ -43,8 +43,8 @@ model likedVideos {
   user_uuid  String   @db.Char(36)
   video_uuid String   @db.Char(36)
   created    DateTime @default(now()) @db.DateTime(0)
-  users      users    @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "liked_videos_ibfk_2")
-  videos     videos   @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "liked_videos_ibfk_3")
+  users      users    @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade, map: "liked_videos_ibfk_2")
+  videos     videos   @relation(fields: [video_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade, map: "liked_videos_ibfk_3")
 
   @@index([user_uuid], map: "user_uuid")
   @@index([video_uuid], map: "video_uuid")
@@ -110,8 +110,8 @@ model videoView {
   video_uuid String   @db.Char(36)
   user_uuid  String   @db.Char(36)
   created    DateTime @default(now()) @db.DateTime(0)
-  users      users    @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "video_view_ibfk_1")
-  videos     videos   @relation(fields: [video_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "video_view_ibfk_2")
+  users      users    @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade, map: "video_view_ibfk_1")
+  videos     videos   @relation(fields: [video_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade, map: "video_view_ibfk_2")
 
   @@index([user_uuid], map: "user_uuid")
   @@index([video_uuid], map: "video_uuid")
@@ -130,7 +130,7 @@ model videos {
   history         history[]
   liked_videos    likedVideos[]
   playlist_videos playlistVideos[]
-  users           users            @relation(fields: [user_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_1")
+  users           users            @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: NoAction, map: "videos_ibfk_1")
   tags            tags             @relation(fields: [tag], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_2")
   videoView       videoView[]
 
